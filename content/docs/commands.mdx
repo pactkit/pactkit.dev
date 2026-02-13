@@ -1,0 +1,160 @@
+---
+title: Command Reference
+description: 13 commands covering the full development lifecycle
+---
+
+## Overview
+
+| Command | Agent | Description |
+|---------|-------|-------------|
+| `/project-init` | System Architect | Initialize project scaffolding and governance |
+| `/project-plan` | System Architect | Analyze requirements, create Spec and Story |
+| `/project-act` | Senior Developer | Implement code per Spec with TDD |
+| `/project-check` | QA Engineer | 6-phase deep audit |
+| `/project-done` | Repo Maintainer | Regression gate, archive, commit |
+| `/project-trace` | Code Explorer | Call graph tracing, sequence diagram |
+| `/project-draw` | Visual Architect | Generate Draw.io XML diagrams |
+| `/project-doctor` | System Medic | Configuration drift detection |
+| `/project-sprint` | Team Lead | Automated PDCA orchestration |
+| `/project-review` | QA Engineer | PR code review with checklists |
+| `/project-hotfix` | Senior Developer | Fast-track fix bypassing PDCA |
+| `/project-release` | Repo Maintainer | Version bump, archive, git tag |
+| `/project-design` | Product Designer | PRD generation, story decomposition |
+
+## PDCA Core Commands
+
+### `/project-plan`
+
+Analyze requirements and produce a Spec.
+
+```
+/project-plan "Add user authentication with OAuth2"
+```
+
+Runs: visual scan → logic trace → design update → Spec creation → Board entry.
+
+### `/project-act`
+
+Implement code per Spec using strict TDD.
+
+```
+/project-act STORY-001
+```
+
+Runs: read Spec → detect stack → write tests (RED) → implement (GREEN) → verify suite.
+
+### `/project-check`
+
+Run a 6-phase deep audit.
+
+```
+/project-check
+```
+
+Runs: security scan → test case gen → layer decision → execution → Spec alignment → verdict.
+
+### `/project-done`
+
+Finalize delivery with regression gate and conventional commit.
+
+```
+/project-done
+```
+
+Runs: cleanup → regression gate → board hygiene → archive → commit.
+
+## Automation
+
+### `/project-sprint`
+
+Run the full PDCA cycle in one command.
+
+```
+/project-sprint "Add user authentication"
+```
+
+Orchestrates Plan → Act → Check → Done automatically using a multi-agent team. Requires the Opus model.
+
+### `/project-hotfix`
+
+Fast-track fix that bypasses the full PDCA cycle.
+
+```
+/project-hotfix "Fix typo in README"
+```
+
+Skips TDD and Spec creation. Suitable for typos, configuration changes, and minor fixes.
+
+## Analysis Commands
+
+### `/project-trace`
+
+Deep code tracing and execution flow analysis.
+
+```
+/project-trace "How does the login flow work?"
+```
+
+Produces a Mermaid sequence diagram and an archaeologist report with patterns, tech debt, and key files.
+
+### `/project-draw`
+
+Generate Draw.io XML architecture diagrams.
+
+```
+/project-draw "System architecture overview"
+```
+
+Supports three diagram types: architecture, dataflow, and deployment.
+
+### `/project-doctor`
+
+Diagnose project health status.
+
+```
+/project-doctor
+```
+
+Checks: PactKit config, architecture graphs, Spec-Board linkage, test suite.
+
+## Review and Design
+
+### `/project-review`
+
+PR code review with structured report.
+
+```
+/project-review 42
+```
+
+Reviews with SOLID, security, and quality checklists. Outputs APPROVE or REQUEST_CHANGES.
+
+### `/project-design`
+
+Greenfield product design for new projects.
+
+```
+/project-design "Build a task management app"
+```
+
+Generates PRD, decomposes into Specs, and populates the Sprint Board.
+
+### `/project-release`
+
+Version bump, archive, and git tag.
+
+```
+/project-release
+```
+
+Updates version number, saves architecture snapshot, and creates a git tag.
+
+### `/project-init`
+
+Initialize project scaffolding and governance structure.
+
+```
+/project-init
+```
+
+Sets up the directory structure, architecture graphs, and initial governance files.

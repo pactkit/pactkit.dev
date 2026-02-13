@@ -1,0 +1,73 @@
+---
+title: MCP Integration
+description: Model Context Protocol server integration
+---
+
+PactKit integrates with [Model Context Protocol](https://modelcontextprotocol.io/) servers to extend agent capabilities. All MCP instructions are **conditional** — if a server isn't available, it's gracefully skipped.
+
+## Supported Servers
+
+### Context7
+
+Fetch up-to-date library documentation and code examples.
+
+- **Tools**: `resolve-library-id` → `get-library-docs`
+- **When**: Implementing with an unfamiliar library API
+- **Phase**: Act
+
+### shadcn
+
+Search, browse, and install UI components from shadcn registries.
+
+- **Tools**: `search_items_in_registries`, `view_items_in_registries`, `get_add_command_for_items`
+- **When**: Project has a `components.json` file (shadcn is configured)
+- **Phase**: Design
+
+### Playwright MCP
+
+Browser automation for testing — snapshots, clicks, screenshots, form filling.
+
+- **Tools**: `browser_navigate`, `browser_snapshot`, `browser_click`, `browser_take_screenshot`
+- **When**: Running browser-level QA checks
+- **Phase**: Check
+
+### Chrome DevTools MCP
+
+Performance tracing, console message inspection, network request analysis.
+
+- **Tools**: `performance_start_trace`, `list_console_messages`, `list_network_requests`
+- **When**: Performance or runtime diagnostics needed
+- **Phase**: Check
+
+### Memory MCP
+
+Persistent knowledge graph for cross-session context.
+
+- **Tools**: `create_entities`, `create_relations`, `add_observations`, `search_nodes`
+- **When**: Storing or retrieving architectural decisions across sessions
+- **Phase**: Plan, Act, Done
+
+## Usage by PDCA Phase
+
+| Phase | MCP Server | Purpose |
+|-------|-----------|---------|
+| **Plan** | Memory | Store architectural decisions and design rationale |
+| **Design** | shadcn | Discover and install UI components |
+| **Act** | Context7 | Verify library API signatures |
+| **Act** | Memory | Load prior context from earlier sessions |
+| **Check** | Playwright | Browser-level QA testing |
+| **Check** | Chrome DevTools | Performance and runtime diagnostics |
+| **Done** | Memory | Record lessons learned |
+
+## Conditional Behavior
+
+Each MCP integration checks for tool availability at runtime:
+
+```
+IF mcp__memory__create_entities tool is available:
+  → store design context
+ELSE:
+  → skip gracefully, continue workflow
+```
+
+No MCP server is required for PactKit to function. They enhance the workflow when present but are never a hard dependency.

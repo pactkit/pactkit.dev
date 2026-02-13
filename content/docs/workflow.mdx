@@ -1,0 +1,91 @@
+---
+title: PDCA+ Workflow
+description: The Plan-Do-Check-Act lifecycle
+---
+
+PactKit's core methodology is the **PDCA cycle** — Plan, Act, Check, Done — with quality gates at every stage.
+
+## The Hierarchy of Truth
+
+Before understanding the workflow, you must understand the governance model:
+
+| Tier | Source | Role |
+|------|--------|------|
+| **Tier 1** | Specs (`docs/specs/*.md`) and Test Cases | **The Law** |
+| **Tier 2** | Tests | Verification of the law |
+| **Tier 3** | Implementation code | The mutable reality |
+
+**Conflict resolution**: When Spec conflicts with code, **Spec wins** — modify the code. When Spec conflicts with tests, **Spec wins** — modify the tests. Code is never the source of truth.
+
+## The Four Phases
+
+### 1. Plan (`/project-plan`)
+
+**Agent**: System Architect
+
+The architect analyzes requirements and produces a Spec:
+
+1. **Visual Scan** — run `visualize` to understand current codebase structure
+2. **Logic Trace** — if modifying existing logic, run `/project-trace` first
+3. **Design** — update the high-level design diagram
+4. **Spec** — create `docs/specs/{ID}.md` with RFC 2119 requirements and Given/When/Then acceptance criteria
+5. **Board** — add a Story to the Sprint Board
+
+### 2. Act (`/project-act`)
+
+**Agent**: Senior Developer
+
+The developer implements code strictly per Spec, following TDD:
+
+1. **Read Spec** — understand the requirements
+2. **Test First** — write unit tests (RED)
+3. **Implement** — write code to make tests pass (GREEN)
+4. **Verify** — ensure the full test suite passes
+
+### 3. Check (`/project-check`)
+
+**Agent**: QA Engineer
+
+The QA engineer runs a 6-phase deep audit:
+
+1. Security scan (OWASP baseline)
+2. Test case generation (Gherkin scenarios)
+3. Layer decision (API-level or browser-level testing)
+4. Test execution
+5. Spec alignment verification
+6. PASS / FAIL verdict
+
+### 4. Done (`/project-done`)
+
+**Agent**: Repo Maintainer
+
+The maintainer finalizes the delivery:
+
+1. **Clean** — remove temporary files
+2. **Regression Gate** — run full test suite; stop if anything fails
+3. **Hygiene** — confirm all Board tasks are checked off
+4. **Archive** — move completed Stories to archive
+5. **Commit** — conventional commit (`feat(scope): description`)
+
+## Sprint Automation
+
+Run the entire PDCA cycle in one command:
+
+```bash
+/project-sprint "Add user authentication"
+```
+
+This orchestrates all four phases automatically using a multi-agent team. Requires the Opus model for agent coordination.
+
+## File Structure
+
+| Path | Purpose |
+|------|---------|
+| `docs/specs/{ID}.md` | Requirement Specifications (The Law) |
+| `docs/test_cases/{ID}_case.md` | Gherkin Acceptance Scenarios |
+| `docs/product/sprint_board.md` | Sprint Board |
+| `docs/product/prd.md` | Product Requirements Document |
+| `docs/architecture/graphs/*.mmd` | Mermaid Architecture Diagrams |
+| `tests/unit/` | Unit Tests |
+| `tests/e2e/` | E2E Integration Tests |
+| `docs/product/archive/` | Archived Stories |

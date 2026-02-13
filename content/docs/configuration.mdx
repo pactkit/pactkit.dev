@@ -1,0 +1,80 @@
+---
+title: Configuration
+description: Deployment modes and customization
+---
+
+## Deployment Modes
+
+### Expert Mode
+
+The default mode. Deploys the complete toolkit:
+
+```bash
+pactkit init
+```
+
+| Deployed Path | Contents |
+|---------------|----------|
+| `~/.claude/CLAUDE.md` | Constitution root (references 6 rule modules) |
+| `~/.claude/rules/01-core-protocol.md` | Core behavioral rules |
+| `~/.claude/rules/02-hierarchy-of-truth.md` | Spec > Tests > Code |
+| `~/.claude/rules/03-file-atlas.md` | File location reference |
+| `~/.claude/rules/04-routing-table.md` | Command routing table |
+| `~/.claude/rules/05-workflow-conventions.md` | Git/PR conventions |
+| `~/.claude/rules/06-mcp-integration.md` | MCP server integration |
+| `~/.claude/agents/*.md` | 9 agent definitions |
+| `~/.claude/commands/*.md` | 13 command playbooks |
+| `~/.claude/skills/*/` | 3 skill tools with scripts |
+
+### Common Mode
+
+Lightweight deployment with only the constitution rules:
+
+```bash
+pactkit init --mode common
+```
+
+Deploys `CLAUDE.md` and the 6 rule modules only. No agents, commands, or skills. Suitable for teams that want governance structure without the full agent ensemble.
+
+## Constitution Rules
+
+The 6 rule modules form the "constitution" that governs agent behavior:
+
+| Module | Purpose |
+|--------|---------|
+| **Core Protocol** | Think-hard mode, atomic tools preference, Visual First, strict TDD, output conventions |
+| **Hierarchy of Truth** | Spec > Tests > Code precedence, conflict resolution rules |
+| **File Atlas** | Standard file locations and their purposes |
+| **Routing Table** | Maps commands to agents and playbooks |
+| **Workflow Conventions** | Conventional Commits, branch naming, PR conventions |
+| **MCP Integration** | Conditional MCP server usage by PDCA phase |
+
+## Language Profiles
+
+PactKit auto-detects the project stack and configures the appropriate test runner:
+
+| Language | Test Runner | Test Dir | Package File |
+|----------|------------|----------|-------------|
+| Python | `pytest` | `tests/` | `pyproject.toml` |
+| Node.js | `npx jest` | `__tests__/` | `package.json` |
+| Go | `go test ./...` | `*_test.go` | `go.mod` |
+| Java | `mvn test` | `src/test/java/` | `pom.xml` |
+
+Detection is automatic based on file extensions found in the project.
+
+## Idempotent Updates
+
+```bash
+pactkit update
+```
+
+Safe to re-run at any time. Re-deploys all managed files while preserving your custom rules (any files without the `01-` through `06-` prefixes in the rules directory).
+
+## Preview
+
+Preview the deployment without modifying `~/.claude/`:
+
+```bash
+pactkit init -t /tmp/preview
+ls /tmp/preview/
+```

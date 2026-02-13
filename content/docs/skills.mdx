@@ -1,0 +1,92 @@
+---
+title: Skills
+description: 3 built-in skill tools
+---
+
+PactKit includes 3 built-in skills — executable Python scripts that agents invoke during workflows.
+
+## pactkit-visualize
+
+Code dependency graph generator using Mermaid format.
+
+### Modes
+
+| Mode | Output | Diagram Type |
+|------|--------|-------------|
+| `--mode file` | `code_graph.mmd` | Module import relationships |
+| `--mode class` | `class_graph.mmd` | Class diagram with inheritance |
+| `--mode call` | `call_graph.mmd` | Function-level call graph |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--entry <func>` | BFS transitive chain tracing from a specific function |
+| `--focus <module>` | Focus on call relationships of a specific module |
+
+### Usage
+
+```bash
+# File-level dependency graph (default)
+visualize
+
+# Class diagram
+visualize --mode class
+
+# Trace all functions reachable from main()
+visualize --mode call --entry main
+
+# Focus on a specific module
+visualize --mode call --focus auth
+```
+
+Output files are written to `docs/architecture/graphs/`.
+
+## pactkit-board
+
+Sprint Board atomic operations.
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `add_story` | Add a new story to the Sprint Board |
+| `update_task` | Update a task's status |
+| `archive` | Archive completed stories to `docs/product/archive/` |
+
+The board file is `docs/product/sprint_board.md`.
+
+### Usage
+
+```bash
+# Add a new story
+add_story STORY-001 "Add user authentication"
+
+# Update task status
+update_task STORY-001 "Implement login" done
+
+# Archive completed stories
+archive
+```
+
+## pactkit-scaffold
+
+File scaffolding for standardized project files.
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `create_spec ITEM-ID "Title"` | Scaffold a Spec file in `docs/specs/` |
+| `create_test_file src/module.py` | Generate corresponding unit test |
+| `create_e2e_test ITEM-ID "scenario"` | Scaffold an E2E test |
+| `git_start ITEM-ID` | Create a git branch with naming convention |
+| `create_skill name "Description"` | Scaffold a new skill directory |
+
+### Branch Naming
+
+| Item Type | Branch Prefix |
+|-----------|--------------|
+| `STORY-*` | `feature/STORY-*` |
+| `HOTFIX-*` | `fix/HOTFIX-*` |
+| `BUG-*` | `fix/BUG-*` |

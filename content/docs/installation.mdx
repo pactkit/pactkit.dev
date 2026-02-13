@@ -1,0 +1,69 @@
+---
+title: Installation
+description: Install and deploy PactKit
+---
+
+## Requirements
+
+- **Python 3.10+**
+- **Claude Code** CLI installed and configured
+
+## Install
+
+```bash
+pip install pactkit
+```
+
+## Deploy
+
+PactKit offers two deployment modes:
+
+### Expert Mode (Default)
+
+Full-featured deployment with 13 commands, 9 agents, and 3 skills.
+
+```bash
+pactkit init
+```
+
+This deploys the complete toolkit to `~/.claude/`:
+
+| Path | Contents |
+|------|----------|
+| `CLAUDE.md` | Global constitution (references 6 rule modules) |
+| `rules/` | 6 modular rule files |
+| `agents/` | 9 agent definitions |
+| `commands/` | 13 command playbooks |
+| `skills/` | 3 skill tools with scripts |
+
+### Common Mode
+
+Lightweight deployment with only the 6 constitution rules. No agents, commands, or skills.
+
+```bash
+pactkit init --mode common
+```
+
+Suitable for teams that want governance rules without the full agent ensemble.
+
+## Other Commands
+
+```bash
+# Update (idempotent, safe to re-run)
+pactkit update
+
+# Check version
+pactkit version
+
+# Preview to custom directory
+pactkit init -t /tmp/preview
+```
+
+## Upgrade
+
+```bash
+pip install --upgrade pactkit
+pactkit update
+```
+
+The `update` command re-deploys all files. Your custom rules (files without managed prefixes like `01-` through `06-`) are preserved.

@@ -1,0 +1,16 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "installation",
+    "---Concepts---",
+    "workflow",
+    "agents",
+    "---Reference---",
+    "commands",
+    "skills",
+    "configuration",
+    "mcp-integration"
+  ]
+}

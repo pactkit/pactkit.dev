@@ -1,0 +1,44 @@
+---
+title: Getting Started
+description: Quick introduction to PactKit
+---
+
+## What is PactKit?
+
+PactKit is an open-source, spec-driven agentic DevOps toolkit for AI coding assistants. It compiles development workflows, role definitions, and behavioral rules into executable **constitutions** and **playbooks** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+
+**Name origin**: Pact (契约) + Kit — *Code by Contract*.
+
+The core idea: **agree on specs before writing code, then let agents execute**.
+
+## At a Glance
+
+| | |
+|---|---|
+| **9 Agents** | Specialized roles with constrained tools |
+| **13 Commands** | Full PDCA+ lifecycle coverage |
+| **3 Skills** | Visualize, Board, Scaffold |
+| **6 Rules** | Modular constitution modules |
+
+## Quick Start
+
+```bash
+# 1. Install
+pip install pactkit
+
+# 2. Deploy to Claude Code
+pactkit init
+
+# 3. Start using in Claude Code
+/project-plan "Add user authentication"
+/project-act STORY-001
+/project-check
+/project-done
+```
+
+## Next Steps
+
+- [Installation](/docs/installation) — deployment modes and options
+- [PDCA+ Workflow](/docs/workflow) — the spec-driven development lifecycle
+- [Agent Ensemble](/docs/agents) — 9 specialized agents
+- [Command Reference](/docs/commands) — all 13 commands

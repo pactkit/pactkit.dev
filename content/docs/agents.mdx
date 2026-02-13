@@ -1,0 +1,96 @@
+---
+title: Agent Ensemble
+description: 9 specialized agents with constrained roles
+---
+
+PactKit deploys 9 specialized agents, each with **constrained tools** and **focused responsibilities**. No single agent can do everything — this enforces separation of concerns.
+
+## Agent Overview
+
+| Agent | Role | Tools |
+|-------|------|-------|
+| System Architect | Plan phase, Specs, architecture | Read, Write, Edit, Bash, Glob |
+| Senior Developer | Act phase, TDD implementation | Read, Write, Edit, Bash, Glob, Grep |
+| QA Engineer | Check phase, test cases | Read, Bash, Grep |
+| Security Auditor | OWASP scanning | Read, Bash, Grep (read-only) |
+| Repo Maintainer | Done phase, commits, releases | Read, Write, Edit, Bash, Glob |
+| System Medic | Diagnostics, health checks | Read, Bash, Glob |
+| Visual Architect | Draw.io diagram generation | Read, Write |
+| Code Explorer | Call graph tracing | Read, Bash, Grep, Glob |
+| Product Designer | PRD, story decomposition | Read, Write, Edit, Bash, Glob, Grep |
+
+## Detailed Roles
+
+### System Architect
+
+Owns the **Plan** phase. Analyzes requirements, maintains the Intent Graph, and produces Specs.
+
+- **Outputs**: Specs (`docs/specs/`), Sprint Board entries, architecture diagrams
+- **Cannot**: write implementation code, run tests, make git commits
+- **Protocol**: Visual scan → Logic trace → Design → Spec → Board entry
+
+### Senior Developer
+
+Owns the **Act** phase. Implements code per Spec with strict TDD.
+
+- **Outputs**: Implementation code that passes all tests
+- **Cannot**: modify Specs, modify Test Cases, make git commits
+- **Protocol**: Read Spec → Write tests (RED) → Implement (GREEN) → Verify full suite
+
+### QA Engineer
+
+Owns the **Check** phase and the `docs/test_cases/` directory.
+
+- **Outputs**: Gherkin test cases, PASS/FAIL verdict, issues list
+- **Cannot**: modify source code, modify Specs
+- **Protocol**: Security scan → Test case gen → Execution → Verdict
+- **Runs in plan mode** — must get approval before taking actions
+
+### Security Auditor
+
+Performs OWASP-based security audits. Has **no write access** — can only read and report.
+
+- **Focus**: Injection, broken auth, sensitive data exposure, XSS, access control, misconfiguration, SSRF
+- **Outputs**: Security audit report ranked by severity (Critical → Low)
+- **Cannot**: modify any code files
+
+### Repo Maintainer
+
+Owns the **Done** phase. Keeps the codebase clean and manages releases.
+
+- **Outputs**: Clean working directory, conventional commits, archive records
+- **Cannot**: write feature code, force push main branch
+- **Protocol**: Clean → Regression gate → Hygiene → Archive → Commit
+
+### System Medic
+
+Diagnoses project health and repairs broken configurations.
+
+- **Outputs**: Health check report table (Config, Graphs, Spec-Board linkage, Tests)
+- **Cannot**: modify business code
+- **Protocol**: Verify config → Check graphs → Validate data → Test suite check
+
+### Visual Architect
+
+Generates system architecture diagrams using Draw.io XML format.
+
+- **Outputs**: `.drawio` files (architecture, dataflow, deployment diagrams)
+- **Cannot**: modify source code or configuration
+- **Max turns**: 30 (focused task)
+
+### Code Explorer
+
+Traces execution paths through static analysis — never runs code.
+
+- **Motto**: "Read little, understand much"
+- **Outputs**: Mermaid sequence diagrams, archaeologist reports
+- **Cannot**: modify any files
+- **Max turns**: 50 (deep analysis), has persistent memory
+
+### Product Designer
+
+Transforms product visions into PRDs and decomposed Stories.
+
+- **Outputs**: PRD (`docs/product/prd.md`), Specs, Sprint Board
+- **Cannot**: write implementation code, fabricate market data
+- **Protocol**: Parse vision → Generate PRD → Decompose into Specs → Board setup
