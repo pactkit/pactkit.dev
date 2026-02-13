@@ -1,15 +1,22 @@
 ---
 title: Skills
-description: 3 built-in skill tools
+description: 9 skill tools powering the PDCA workflow
 ---
 
-PactKit includes 3 built-in skills — executable Python scripts that agents invoke during workflows.
+PactKit includes 9 skills — modular tools that agents invoke during workflows. Skills can be called directly (e.g., `/pactkit-draw`) or are auto-invoked by commands at the right moment.
 
-## pactkit-visualize
+| Type | Count | Description |
+|------|-------|-------------|
+| **Scripted** | 3 | Python scripts with executable logic |
+| **Prompt-only** | 6 | Prompt templates embedded in PDCA commands |
+
+## Scripted Skills
+
+These skills include executable Python scripts alongside their prompt definitions.
+
+### pactkit-visualize
 
 Code dependency graph generator using Mermaid format.
-
-### Modes
 
 | Mode | Output | Diagram Type |
 |------|--------|-------------|
@@ -17,63 +24,30 @@ Code dependency graph generator using Mermaid format.
 | `--mode class` | `class_graph.mmd` | Class diagram with inheritance |
 | `--mode call` | `call_graph.mmd` | Function-level call graph |
 
-### Options
-
-| Option | Description |
-|--------|-------------|
-| `--entry <func>` | BFS transitive chain tracing from a specific function |
-| `--focus <module>` | Focus on call relationships of a specific module |
-
-### Usage
+Options: `--entry <func>` for BFS tracing, `--focus <module>` for module-scoped analysis.
 
 ```bash
-# File-level dependency graph (default)
-visualize
-
-# Class diagram
-visualize --mode class
-
-# Trace all functions reachable from main()
-visualize --mode call --entry main
-
-# Focus on a specific module
-visualize --mode call --focus auth
+visualize                            # File-level dependency graph
+visualize --mode class               # Class diagram
+visualize --mode call --entry main   # Call chain from main()
 ```
 
-Output files are written to `docs/architecture/graphs/`.
+Output: `docs/architecture/graphs/`
 
-## pactkit-board
+### pactkit-board
 
-Sprint Board atomic operations.
-
-### Commands
+Sprint Board atomic operations on `docs/product/sprint_board.md`.
 
 | Command | Description |
 |---------|-------------|
 | `add_story` | Add a new story to the Sprint Board |
-| `update_task` | Update a task's status |
-| `archive` | Archive completed stories to `docs/product/archive/` |
+| `update_task` | Mark a task as done |
+| `archive` | Move completed stories to `docs/product/archive/` |
+| `fix_board` | Relocate misplaced stories to correct sections |
 
-The board file is `docs/product/sprint_board.md`.
-
-### Usage
-
-```bash
-# Add a new story
-add_story STORY-001 "Add user authentication"
-
-# Update task status
-update_task STORY-001 "Implement login" done
-
-# Archive completed stories
-archive
-```
-
-## pactkit-scaffold
+### pactkit-scaffold
 
 File scaffolding for standardized project files.
-
-### Commands
 
 | Command | Description |
 |---------|-------------|
@@ -83,10 +57,66 @@ File scaffolding for standardized project files.
 | `git_start ITEM-ID` | Create a git branch with naming convention |
 | `create_skill name "Description"` | Scaffold a new skill directory |
 
-### Branch Naming
+## Prompt-only Skills
 
-| Item Type | Branch Prefix |
-|-----------|--------------|
-| `STORY-*` | `feature/STORY-*` |
-| `HOTFIX-*` | `fix/HOTFIX-*` |
-| `BUG-*` | `fix/BUG-*` |
+These skills provide prompt templates that are embedded into PDCA commands. They can also be invoked directly.
+
+### pactkit-trace
+
+Deep code tracing and execution flow analysis. Produces Mermaid sequence diagrams and an archaeologist report.
+
+```
+/pactkit-trace "How does the login flow work?"
+```
+
+**Embedded in**: `/project-plan` (Phase 1), `/project-act` (Phase 1)
+
+### pactkit-draw
+
+Generate Draw.io XML architecture diagrams. Supports architecture, dataflow, and deployment diagram types.
+
+```
+/pactkit-draw "System architecture overview"
+```
+
+**Embedded in**: `/project-plan` (Phase 2), `/project-design` (Phase 2)
+
+### pactkit-status
+
+Project state overview for cold-start orientation. Reports sprint status, git state, and health indicators.
+
+```
+/pactkit-status
+```
+
+**Embedded in**: `/project-init` (Phase 6)
+
+### pactkit-doctor
+
+Diagnose project health. Checks config, architecture graphs, Spec-Board linkage, and test suite.
+
+```
+/pactkit-doctor
+```
+
+**Embedded in**: `/project-init` (auto-check)
+
+### pactkit-review
+
+PR code review with SOLID, security, and quality checklists. Outputs APPROVE or REQUEST_CHANGES.
+
+```
+/pactkit-review 42
+```
+
+**Embedded in**: `/project-check` (Phase 4, PR variant)
+
+### pactkit-release
+
+Version release workflow: version bump, architecture snapshot, archive, and git tag.
+
+```
+/pactkit-release
+```
+
+**Embedded in**: `/project-done` (Phase 3.7, release variant)

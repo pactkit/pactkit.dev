@@ -27,7 +27,7 @@ The architect analyzes requirements and produces a Spec:
 
 0. **Init Guard** — automatically checks if the project is initialized; runs `/project-init` if needed
 1. **Visual Scan** — run `visualize` to understand current codebase structure
-2. **Logic Trace** — if modifying existing logic, run `/project-trace` first
+2. **Logic Trace** — if modifying existing logic, uses the `pactkit-trace` skill
 3. **Design** — update the high-level design diagram
 4. **Spec** — create `docs/specs/{ID}.md` with RFC 2119 requirements and Given/When/Then acceptance criteria
 5. **Board** — add a Story to the Sprint Board

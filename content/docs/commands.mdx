@@ -1,9 +1,11 @@
 ---
 title: Command Reference
-description: 13 commands covering the full development lifecycle
+description: 8 commands covering the full PDCA lifecycle
 ---
 
 ## Overview
+
+PactKit provides 8 commands as workflow entry points. Six former utility commands (trace, draw, doctor, status, review, release) are now [skills](/docs/skills) — embedded into the PDCA commands and auto-invoked at the right moment.
 
 | Command | Agent | Description |
 |---------|-------|-------------|
@@ -12,13 +14,8 @@ description: 13 commands covering the full development lifecycle
 | `/project-act` | Senior Developer | Implement code per Spec with TDD |
 | `/project-check` | QA Engineer | 6-phase deep audit |
 | `/project-done` | Repo Maintainer | Regression gate, archive, commit |
-| `/project-trace` | Code Explorer | Call graph tracing, sequence diagram |
-| `/project-draw` | Visual Architect | Generate Draw.io XML diagrams |
-| `/project-doctor` | System Medic | Configuration drift detection |
 | `/project-sprint` | Team Lead | Automated PDCA orchestration |
-| `/project-review` | QA Engineer | PR code review with checklists |
 | `/project-hotfix` | Senior Developer | Fast-track fix bypassing PDCA |
-| `/project-release` | Repo Maintainer | Version bump, archive, git tag |
 | `/project-design` | Product Designer | PRD generation, story decomposition |
 
 ## PDCA Core Commands
@@ -31,7 +28,7 @@ Analyze requirements and produce a Spec.
 /project-plan "Add user authentication with OAuth2"
 ```
 
-Runs: **Init Guard** → visual scan → logic trace → design update → Spec creation → Board entry.
+Runs: **Init Guard** → visual scan → logic trace (via `pactkit-trace` skill) → design update → Spec creation → Board entry.
 
 <Callout type="info">
 **Init Guard**: Before proceeding, this command automatically checks for `.claude/pactkit.yaml`, `docs/product/sprint_board.md`, and `docs/architecture/graphs/`. If any are missing, it runs `/project-init` first — so you never have to worry about forgetting to initialize.
@@ -55,7 +52,7 @@ Run a 6-phase deep audit.
 /project-check
 ```
 
-Runs: security scan → test case gen → layer decision → execution → Spec alignment → verdict.
+Runs: security scan → test case gen → layer decision → execution → Spec alignment → verdict. Includes `pactkit-review` skill for PR code review scenarios.
 
 ### `/project-done`
 
@@ -65,7 +62,7 @@ Finalize delivery with regression gate and conventional commit.
 /project-done
 ```
 
-Runs: cleanup → regression gate → board hygiene → archive → commit.
+Runs: cleanup → regression gate → board hygiene → archive → commit. Includes `pactkit-release` skill for version release scenarios.
 
 ## Automation
 
@@ -89,53 +86,7 @@ Fast-track fix that bypasses the full PDCA cycle.
 
 Skips TDD and Spec creation. Suitable for typos, configuration changes, and minor fixes.
 
-## Analysis Commands
-
-### `/project-trace`
-
-Deep code tracing and execution flow analysis.
-
-```
-/project-trace "How does the login flow work?"
-```
-
-Produces a Mermaid sequence diagram and an archaeologist report with patterns, tech debt, and key files.
-
-### `/project-draw`
-
-Generate Draw.io XML architecture diagrams.
-
-```
-/project-draw "System architecture overview"
-```
-
-Supports three diagram types: architecture, dataflow, and deployment.
-
-### `/project-doctor`
-
-Diagnose project health status.
-
-```
-/project-doctor
-```
-
-Checks: **Init Guard** → PactKit config, architecture graphs, Spec-Board linkage, test suite.
-
-<Callout type="info">
-**Init Guard**: If the project hasn't been initialized, Doctor detects the missing markers and offers you a choice — auto-fix with `/project-init`, or continue the diagnosis as-is.
-</Callout>
-
-## Review and Design
-
-### `/project-review`
-
-PR code review with structured report.
-
-```
-/project-review 42
-```
-
-Reviews with SOLID, security, and quality checklists. Outputs APPROVE or REQUEST_CHANGES.
+## Lifecycle
 
 ### `/project-design`
 
@@ -145,17 +96,7 @@ Greenfield product design for new projects.
 /project-design "Build a task management app"
 ```
 
-Generates PRD, decomposes into Specs, and populates the Sprint Board.
-
-### `/project-release`
-
-Version bump, archive, and git tag.
-
-```
-/project-release
-```
-
-Updates version number, saves architecture snapshot, and creates a git tag.
+Generates PRD, decomposes into Specs, and populates the Sprint Board. Uses `pactkit-draw` skill for architecture diagrams.
 
 ### `/project-init`
 
@@ -165,4 +106,4 @@ Initialize project scaffolding and governance structure.
 /project-init
 ```
 
-Sets up the directory structure, architecture graphs, and initial governance files.
+Sets up the directory structure, architecture graphs, and initial governance files. Uses `pactkit-status` and `pactkit-doctor` skills for health checks.
