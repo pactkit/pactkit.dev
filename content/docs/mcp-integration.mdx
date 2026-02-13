@@ -47,12 +47,22 @@ Persistent knowledge graph for cross-session context.
 - **When**: Storing or retrieving architectural decisions across sessions
 - **Phase**: Plan, Act, Done
 
+### Draw.io
+
+Architecture diagram instant preview and interactive editing.
+
+- **Tools**: `open_drawio_xml`, `open_drawio_csv`, `open_drawio_mermaid`
+- **When**: Generating architecture diagrams with instant preview
+- **Phase**: Plan, Design
+
 ## Usage by PDCA Phase
 
 | Phase | MCP Server | Purpose |
 |-------|-----------|---------|
 | **Plan** | Memory | Store architectural decisions and design rationale |
+| **Plan** | Draw.io | Instant preview of architecture diagrams |
 | **Design** | shadcn | Discover and install UI components |
+| **Design** | Draw.io | Interactive architecture diagram editing |
 | **Act** | Context7 | Verify library API signatures |
 | **Act** | Memory | Load prior context from earlier sessions |
 | **Check** | Playwright | Browser-level QA testing |
