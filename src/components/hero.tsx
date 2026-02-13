@@ -12,10 +12,10 @@ export function Hero() {
           Code by Contract
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-          Agree on specs before writing code. Let agents execute.
+          Ship features with AI agents that follow specs, not vibes.
           <br />
-          PactKit compiles workflows, roles, and rules into executable
-          constitutions for AI coding assistants.
+          One <code className="text-foreground/80">pip install</code> gives Claude Code
+          a structured operating system — specs before code, TDD by default, safe regression gates.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
