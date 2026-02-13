@@ -30,6 +30,20 @@ This deploys the complete toolkit to `~/.claude/`:
 | `commands/` | 13 command playbooks |
 | `skills/` | 3 skill tools with scripts |
 
+## Project Initialization
+
+After deploying PactKit globally, initialize each project you work on:
+
+```bash
+/project-init
+```
+
+This creates the governance structure (`docs/specs/`, `docs/product/sprint_board.md`, `docs/architecture/graphs/`, etc.) in your project directory.
+
+<Callout type="info">
+**Forgot to initialize?** No problem — `/project-plan` and `/project-doctor` automatically detect uninitialized projects and handle it for you.
+</Callout>
+
 ## Other Commands
 
 ```bash

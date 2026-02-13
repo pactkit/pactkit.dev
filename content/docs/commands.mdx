@@ -31,7 +31,11 @@ Analyze requirements and produce a Spec.
 /project-plan "Add user authentication with OAuth2"
 ```
 
-Runs: visual scan → logic trace → design update → Spec creation → Board entry.
+Runs: **Init Guard** → visual scan → logic trace → design update → Spec creation → Board entry.
+
+<Callout type="info">
+**Init Guard**: Before proceeding, this command automatically checks for `.claude/pactkit.yaml`, `docs/product/sprint_board.md`, and `docs/architecture/graphs/`. If any are missing, it runs `/project-init` first — so you never have to worry about forgetting to initialize.
+</Callout>
 
 ### `/project-act`
 
@@ -115,7 +119,11 @@ Diagnose project health status.
 /project-doctor
 ```
 
-Checks: PactKit config, architecture graphs, Spec-Board linkage, test suite.
+Checks: **Init Guard** → PactKit config, architecture graphs, Spec-Board linkage, test suite.
+
+<Callout type="info">
+**Init Guard**: If the project hasn't been initialized, Doctor detects the missing markers and offers you a choice — auto-fix with `/project-init`, or continue the diagnosis as-is.
+</Callout>
 
 ## Review and Design
 

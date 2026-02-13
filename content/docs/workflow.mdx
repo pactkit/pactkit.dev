@@ -25,6 +25,7 @@ Before understanding the workflow, you must understand the governance model:
 
 The architect analyzes requirements and produces a Spec:
 
+0. **Init Guard** — automatically checks if the project is initialized; runs `/project-init` if needed
 1. **Visual Scan** — run `visualize` to understand current codebase structure
 2. **Logic Trace** — if modifying existing logic, run `/project-trace` first
 3. **Design** — update the high-level design diagram
