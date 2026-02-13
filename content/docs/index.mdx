@@ -22,14 +22,27 @@ The core idea: **agree on specs before writing code, then let agents execute**.
 
 ## Quick Start
 
+<Tabs items={['Plugin (Recommended)', 'pip']}>
+<Tab value="Plugin (Recommended)">
 ```bash
-# 1. Install
+# In Claude Code:
+/plugin marketplace add pactkit/claude-code-plugin
+/plugin install pactkit
+```
+No Python required. Restart Claude Code and you're ready.
+</Tab>
+<Tab value="pip">
+```bash
 pip install pactkit
-
-# 2. Deploy to Claude Code
 pactkit init
+```
+Requires Python 3.10+. Supports `pactkit.yaml` for selective deployment.
+</Tab>
+</Tabs>
 
-# 3. Start using in Claude Code
+Then start using in Claude Code:
+
+```bash
 /project-plan "Add user authentication"
 /project-act STORY-001
 /project-check

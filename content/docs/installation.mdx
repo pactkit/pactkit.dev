@@ -3,18 +3,64 @@ title: Installation
 description: Install and deploy PactKit
 ---
 
-## Requirements
+PactKit offers two installation methods. Choose the one that fits your workflow.
+
+## Option A: Claude Code Plugin (Recommended)
+
+The simplest way to install. No Python required.
+
+```bash
+# In Claude Code:
+/plugin marketplace add pactkit/claude-code-plugin
+/plugin install pactkit
+```
+
+Restart Claude Code. All 9 agents, 13 commands, and 3 skills are immediately available.
+
+| | |
+|---|---|
+| **Update** | Automatic via marketplace, or `/plugin update pactkit` |
+| **Uninstall** | `/plugin uninstall pactkit` |
+| **Isolation** | Plugin lives in its own cache directory, separate from `~/.claude/` |
+| **Team sharing** | Add to `.claude/settings.json` — teammates get prompted to install |
+
+<Callout type="info">
+The plugin deploys all components. For selective deployment (e.g., disable certain agents or commands), use the pip method with `pactkit.yaml`.
+</Callout>
+
+### Team Sharing
+
+Add the following to your project's `.claude/settings.json` to auto-prompt teammates:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "pactkit": {
+      "source": { "source": "github", "repo": "pactkit/claude-code-plugin" }
+    }
+  },
+  "enabledPlugins": {
+    "pactkit@pactkit": true
+  }
+}
+```
+
+## Option B: pip Install
+
+For users who want fine-grained control via `pactkit.yaml`.
+
+### Requirements
 
 - **Python 3.10+**
 - **Claude Code** CLI installed and configured
 
-## Install
+### Install
 
 ```bash
 pip install pactkit
 ```
 
-## Deploy
+### Deploy
 
 ```bash
 pactkit init
@@ -30,9 +76,44 @@ This deploys the complete toolkit to `~/.claude/`:
 | `commands/` | 13 command playbooks |
 | `skills/` | 3 skill tools with scripts |
 
+### Selective Deployment
+
+Edit `~/.claude/pactkit.yaml` to disable specific components, then re-deploy:
+
+```bash
+pactkit update
+```
+
+See [Configuration](/docs/configuration) for details on `pactkit.yaml`.
+
+### Upgrade
+
+```bash
+pip install --upgrade pactkit
+pactkit update
+```
+
+The `update` command re-deploys all files. Your custom rules (files without managed prefixes like `01-` through `06-`) are preserved.
+
+### Other Commands
+
+```bash
+# Check version
+pactkit version
+
+# Preview to custom directory
+pactkit init -t /tmp/preview
+
+# Generate a standalone plugin directory
+pactkit init --format plugin -t ./pactkit-plugin
+
+# Generate a marketplace repository
+pactkit init --format marketplace -t ./pactkit-marketplace
+```
+
 ## Project Initialization
 
-After deploying PactKit globally, initialize each project you work on:
+After installing PactKit (via either method), initialize each project you work on:
 
 ```bash
 /project-init
@@ -43,25 +124,3 @@ This creates the governance structure (`docs/specs/`, `docs/product/sprint_board
 <Callout type="info">
 **Forgot to initialize?** No problem — `/project-plan` and `/project-doctor` automatically detect uninitialized projects and handle it for you.
 </Callout>
-
-## Other Commands
-
-```bash
-# Update (idempotent, safe to re-run)
-pactkit update
-
-# Check version
-pactkit version
-
-# Preview to custom directory
-pactkit init -t /tmp/preview
-```
-
-## Upgrade
-
-```bash
-pip install --upgrade pactkit
-pactkit update
-```
-
-The `update` command re-deploys all files. Your custom rules (files without managed prefixes like `01-` through `06-`) are preserved.
