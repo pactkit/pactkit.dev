@@ -18,11 +18,8 @@ export function QuickStart() {
           <Step
             number={2}
             title="Deploy"
-            code={`# Expert mode — 13 commands + 9 agents + 3 skills
-pactkit init
-
-# Or lightweight Common mode
-pactkit init --mode common`}
+            code={`# Deploy 13 commands + 9 agents + 3 skills
+pactkit init`}
           />
           <Step
             number={3}

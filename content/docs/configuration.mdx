@@ -1,40 +1,24 @@
 ---
 title: Configuration
-description: Deployment modes and customization
+description: Deployed files and customization
 ---
 
-## Deployment Modes
+## Deployed Files
 
-### Expert Mode
+`pactkit init` deploys the following to `~/.claude/`:
 
-The default mode. Deploys the complete toolkit:
-
-```bash
-pactkit init
-```
-
-| Deployed Path | Contents |
-|---------------|----------|
-| `~/.claude/CLAUDE.md` | Constitution root (references 6 rule modules) |
-| `~/.claude/rules/01-core-protocol.md` | Core behavioral rules |
-| `~/.claude/rules/02-hierarchy-of-truth.md` | Spec > Tests > Code |
-| `~/.claude/rules/03-file-atlas.md` | File location reference |
-| `~/.claude/rules/04-routing-table.md` | Command routing table |
-| `~/.claude/rules/05-workflow-conventions.md` | Git/PR conventions |
-| `~/.claude/rules/06-mcp-integration.md` | MCP server integration |
-| `~/.claude/agents/*.md` | 9 agent definitions |
-| `~/.claude/commands/*.md` | 13 command playbooks |
-| `~/.claude/skills/*/` | 3 skill tools with scripts |
-
-### Common Mode
-
-Lightweight deployment with only the constitution rules:
-
-```bash
-pactkit init --mode common
-```
-
-Deploys `CLAUDE.md` and the 6 rule modules only. No agents, commands, or skills. Suitable for teams that want governance structure without the full agent ensemble.
+| Path | Contents |
+|------|----------|
+| `CLAUDE.md` | Constitution root (references 6 rule modules) |
+| `rules/01-core-protocol.md` | Core behavioral rules |
+| `rules/02-hierarchy-of-truth.md` | Spec > Tests > Code |
+| `rules/03-file-atlas.md` | File location reference |
+| `rules/04-routing-table.md` | Command routing table |
+| `rules/05-workflow-conventions.md` | Git/PR conventions |
+| `rules/06-mcp-integration.md` | MCP server integration |
+| `agents/*.md` | 9 agent definitions |
+| `commands/*.md` | 13 command playbooks |
+| `skills/*/` | 3 skill tools with scripts |
 
 ## Constitution Rules
 
