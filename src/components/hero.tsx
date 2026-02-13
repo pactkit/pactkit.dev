@@ -42,7 +42,9 @@ export function Hero() {
         <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
           <span>9 Agents</span>
           <span className="text-border">|</span>
-          <span>13 Commands</span>
+          <span>8 Commands</span>
+          <span className="text-border">|</span>
+          <span>9 Skills</span>
           <span className="text-border">|</span>
           <span>Full PDCA Lifecycle</span>
           <span className="text-border">|</span>

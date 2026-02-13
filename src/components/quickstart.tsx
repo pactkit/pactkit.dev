@@ -18,7 +18,7 @@ export function QuickStart() {
           <Step
             number={2}
             title="Deploy"
-            code={`# Deploy 13 commands + 9 agents + 3 skills
+            code={`# Deploy 8 commands + 9 agents + 9 skills
 pactkit init`}
           />
           <Step
