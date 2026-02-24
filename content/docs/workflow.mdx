@@ -25,12 +25,13 @@ Before understanding the workflow, you must understand the governance model:
 
 The architect analyzes requirements and produces a Spec:
 
-0. **Init Guard** — automatically checks if the project is initialized; runs `/project-init` if needed
+0. **Init Guard** — automatically checks if the project is initialized; runs `/project-init` if needed. Also verifies `pactkit.yaml` completeness and backfills missing sections.
 1. **Visual Scan** — run `visualize` to understand current codebase structure
 2. **Logic Trace** — if modifying existing logic, uses the `pactkit-trace` skill
 3. **Design** — update the high-level design diagram
 4. **Spec** — create `docs/specs/{ID}.md` with RFC 2119 requirements and Given/When/Then acceptance criteria
 5. **Board** — add a Story to the Sprint Board
+6. **Context** — update `docs/product/context.md` for cross-session awareness
 
 ### 2. Act (`/project-act`)
 
@@ -40,9 +41,13 @@ The developer implements code strictly per Spec, following TDD:
 
 1. **Read Spec** — understand the requirements
 2. **Test First** — write unit tests (RED)
-3. **Implement** — write code to make tests pass (GREEN)
+3. **Implement** — write code to make tests pass (GREEN), with a 5-iteration cap
 4. **Lint Check** — run linter if CI config exists (e.g., `ruff check` for Python)
 5. **Verify** — ensure the full test suite passes
+
+<Callout type="info">
+**Environment Bailout**: If a test fails with an environment error (missing package, connection refused), the developer distinguishes between project-internal modules (keep coding) and third-party dependencies (stop and report). This prevents false stops during normal development.
+</Callout>
 
 ### 3. Check (`/project-check`)
 
@@ -55,7 +60,7 @@ The QA engineer runs a 6-phase deep audit:
 3. Layer decision (API-level or browser-level testing)
 4. Test execution
 5. Spec alignment verification
-6. PASS / FAIL verdict
+6. PASS / FAIL verdict (includes Test Quality Gate for detecting tautological or over-mocked tests)
 
 ### 4. Done (`/project-done`)
 
@@ -65,12 +70,27 @@ The maintainer finalizes the delivery:
 
 1. **Clean** — remove temporary files
 2. **Regression Gate** — run full test suite; stop if anything fails
-3. **Lint Gate** — run linter if CI config exists; stop if lint fails
+3. **Lint Gate** — run linter with configurable blocking behavior
 4. **Architecture Maintenance** — verify `system_design.mmd` component counts, refresh `rules.md` test invariants
-5. **Hygiene** — confirm all Board tasks are checked off
+5. **Hygiene** — confirm all Board tasks are checked off, append lessons to `lessons.md`
 6. **Archive** — move completed Stories to archive
-7. **Release** (conditional) — version bump, snapshot, snapshot verification
-8. **Commit** — conventional commit (`feat(scope): description`)
+7. **Issue Closure** — close linked GitHub Issues (if `issue_tracker.provider: github`)
+8. **Deploy Verify** — if a deployer exists, run it and smoke-test artifacts
+9. **Release** (conditional) — version bump, snapshot, snapshot verification
+10. **Commit** — conventional commit (`feat(scope): description`)
+11. **Context** — update `docs/product/context.md` for next session
+
+## Session Context
+
+PactKit maintains `docs/product/context.md` — an auto-generated file that gives the next session instant awareness of project state. It includes:
+
+- Sprint status (in-progress, backlog, done counts)
+- Recent completions (last 3 stories)
+- Active branches
+- Key decisions (last 5 lessons from `lessons.md`)
+- Recommended next action
+
+This file is updated by `/project-plan` and `/project-done`, and read at the start of every new session via the Core Protocol rule.
 
 ## Sprint Automation
 
@@ -89,8 +109,12 @@ This orchestrates all four phases automatically using a multi-agent team. Requir
 | `docs/specs/{ID}.md` | Requirement Specifications (The Law) |
 | `docs/test_cases/{ID}_case.md` | Gherkin Acceptance Scenarios |
 | `docs/product/sprint_board.md` | Sprint Board |
+| `docs/product/context.md` | Auto-generated session context |
 | `docs/product/prd.md` | Product Requirements Document |
 | `docs/architecture/graphs/*.mmd` | Mermaid Architecture Diagrams |
+| `docs/architecture/governance/rules.md` | Architecture decisions and invariants |
+| `docs/architecture/governance/lessons.md` | Lessons learned (auto-appended by Done) |
+| `docs/architecture/snapshots/` | Versioned architecture graph snapshots |
 | `tests/unit/` | Unit Tests |
 | `tests/e2e/` | E2E Integration Tests |
 | `docs/product/archive/` | Archived Stories |

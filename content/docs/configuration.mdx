@@ -24,6 +24,31 @@ This page covers the **pip install** deployment. If you installed via the [Claud
 | `commands/*.md` | 8 command playbooks |
 | `skills/*/` | 9 skills (3 scripted + 6 prompt-only) |
 
+## pactkit.yaml Reference
+
+The `pactkit.yaml` file controls which components are deployed and how they behave:
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `stack` | string | auto-detected | Project stack (`python`, `node`, `go`, `java`) |
+| `version` | string | current | PactKit version that generated the config |
+| `root` | string | `~/.claude` | Deployment root directory |
+| `agents` | list | all 9 | Agent definitions to deploy |
+| `commands` | list | all 8 | Command playbooks to deploy |
+| `skills` | list | all 9 | Skills to deploy |
+| `rules` | list | all 6 | Constitution rule modules to deploy |
+| `exclude` | list | `[]` | Components to exclude from deployment |
+| `ci` | object | `provider: none` | CI/CD pipeline generation (`github`, `gitlab`, `none`) |
+| `issue_tracker` | object | `provider: none` | External issue tracker (`github`, `none`) |
+| `hooks` | object | disabled | Opt-in hook templates (pre-commit, post-test, pre-push) |
+| `lint_blocking` | bool | `false` | Whether lint failures block commits in Done command |
+| `auto_fix` | bool | `false` | Whether to auto-fix lint errors before checking |
+| `rule_scopes` | object | `{}` | Map rule IDs to glob patterns for context-aware scoping |
+
+<Callout type="info">
+All conditional features (CI/CD, issue tracking, hooks, lint blocking) are **disabled by default** and only activate when explicitly configured. This respects diverse user environments.
+</Callout>
+
 ## Constitution Rules
 
 The 6 rule modules form the "constitution" that governs agent behavior:
@@ -51,6 +76,14 @@ PactKit auto-detects the project stack and configures the appropriate test runne
 Valid `stack` values in `pactkit.yaml`: `python`, `node`, `go`, `java`. Detection is automatic based on manifest files found in the project.
 
 The `lint_command` is used by both Act and Done commands to run a CI lint gate before commit, catching formatting and style errors early.
+
+## Safe Regression
+
+PactKit's safe regression system prevents agents from blindly modifying pre-existing tests:
+
+- **TDD Loop** — Only iterates on tests created in the current story
+- **Regression Check** — Read-only gate; pre-existing test failure = STOP and report
+- **Done Gate** — Full regression by default; incremental only when ALL safety conditions are met
 
 ## Idempotent Updates
 

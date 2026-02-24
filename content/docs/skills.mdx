@@ -24,12 +24,13 @@ Code dependency graph generator using Mermaid format.
 | `--mode class` | `class_graph.mmd` | Class diagram with inheritance |
 | `--mode call` | `call_graph.mmd` | Function-level call graph |
 
-Options: `--entry <func>` for BFS tracing, `--focus <module>` for module-scoped analysis.
+Options: `--entry <func>` for BFS tracing, `--focus <module>` for module-scoped analysis, `--depth N` for large codebases.
 
 ```bash
 visualize                            # File-level dependency graph
 visualize --mode class               # Class diagram
 visualize --mode call --entry main   # Call chain from main()
+visualize --focus auth --depth 2     # Focused graph, 2 levels deep
 ```
 
 Output: `docs/architecture/graphs/`
@@ -40,9 +41,12 @@ Sprint Board atomic operations on `docs/product/sprint_board.md`.
 
 | Command | Description |
 |---------|-------------|
-| `add_story` | Add a new story to the Sprint Board |
-| `update_task` | Mark a task as done |
+| `add_story ITEM-ID "Title" "Task A\|Task B"` | Add a new story to the Sprint Board |
+| `update_task ITEM-ID "Task Name"` | Mark a task as done |
 | `archive` | Move completed stories to `docs/product/archive/` |
+| `list_stories` | View current stories |
+| `update_version VERSION` | Update version number |
+| `snapshot "vX.Y.Z"` | Save architecture graphs to `docs/architecture/snapshots/` |
 | `fix_board` | Relocate misplaced stories to correct sections |
 
 ### pactkit-scaffold
@@ -95,7 +99,7 @@ Project state overview for cold-start orientation. Reports sprint status, git st
 
 ### pactkit-doctor
 
-Diagnose project health. Checks config, architecture graphs, Spec-Board linkage, and test suite.
+Diagnose project health. Checks config, architecture graphs, Spec-Board linkage, and test suite. Includes stale graph detection (7+ days), orphaned/missing spec detection, config drift detection, and severity levels (INFO/WARN/ERROR).
 
 ```
 /pactkit-doctor
