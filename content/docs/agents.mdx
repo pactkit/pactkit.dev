@@ -56,11 +56,11 @@ Performs OWASP-based security audits. Has **no write access** — can only read 
 
 ### Repo Maintainer
 
-Owns the **Done** phase. Keeps the codebase clean and manages releases.
+Owns the **Done** phase. Keeps the codebase clean, maintains architecture docs, and manages releases.
 
-- **Outputs**: Clean working directory, conventional commits, archive records
+- **Outputs**: Clean working directory, conventional commits, archive records, up-to-date architecture docs
 - **Cannot**: write feature code, force push main branch
-- **Protocol**: Clean → Regression gate → Hygiene → Archive → Commit
+- **Protocol**: Clean → Regression gate → Lint gate → Architecture check → Hygiene → Archive → Commit
 
 ### System Medic
 

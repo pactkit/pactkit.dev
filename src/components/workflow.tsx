@@ -2,13 +2,13 @@ import { Badge } from "@/components/ui/badge";
 
 const commands = [
   { cmd: "/project-plan", agent: "System Architect", desc: "Codebase scan, Spec generation, Board entry" },
-  { cmd: "/project-act", agent: "Senior Developer", desc: "Visual scan, TDD loop, Regression check" },
+  { cmd: "/project-act", agent: "Senior Developer", desc: "Visual scan, TDD loop, Lint check, Regression check" },
   { cmd: "/project-check", agent: "QA + Security", desc: "6-phase deep audit (Security/Quality/Spec)" },
-  { cmd: "/project-done", agent: "Repo Maintainer", desc: "Safe regression gate, Archive, Conventional commit" },
+  { cmd: "/project-done", agent: "Repo Maintainer", desc: "Regression + lint gate, Architecture check, Archive, Commit" },
   { cmd: "/project-sprint", agent: "Team Lead", desc: "One-command automated PDCA orchestration" },
   { cmd: "/project-hotfix", agent: "Senior Developer", desc: "Fast-track fix bypassing PDCA" },
   { cmd: "/project-design", agent: "Product Designer", desc: "PRD generation, Story decomposition, Board setup" },
-  { cmd: "/project-init", agent: "System Architect", desc: "Initialize project scaffolding and governance" },
+  { cmd: "/project-init", agent: "System Architect", desc: "Project scaffolding, governance, .claude/CLAUDE.md" },
 ];
 
 const skills = [

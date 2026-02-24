@@ -39,16 +39,18 @@ The 6 rule modules form the "constitution" that governs agent behavior:
 
 ## Language Profiles
 
-PactKit auto-detects the project stack and configures the appropriate test runner:
+PactKit auto-detects the project stack and configures the appropriate test runner and lint command:
 
-| Language | Test Runner | Test Dir | Package File |
-|----------|------------|----------|-------------|
-| Python | `pytest` | `tests/` | `pyproject.toml` |
-| Node.js | `npx jest` | `__tests__/` | `package.json` |
-| Go | `go test ./...` | `*_test.go` | `go.mod` |
-| Java | `mvn test` | `src/test/java/` | `pom.xml` |
+| Stack | Test Runner | Lint Command | Package File |
+|-------|------------|-------------|-------------|
+| `python` | `pytest tests/` | `ruff check src/ tests/` | `pyproject.toml` |
+| `node` | `npx jest` | `npx eslint .` | `package.json` |
+| `go` | `go test ./...` | `golangci-lint run` | `go.mod` |
+| `java` | `mvn test` | `mvn checkstyle:check` | `pom.xml` |
 
-Detection is automatic based on file extensions found in the project.
+Valid `stack` values in `pactkit.yaml`: `python`, `node`, `go`, `java`. Detection is automatic based on manifest files found in the project.
+
+The `lint_command` is used by both Act and Done commands to run a CI lint gate before commit, catching formatting and style errors early.
 
 ## Idempotent Updates
 

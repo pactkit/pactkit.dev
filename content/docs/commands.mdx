@@ -42,7 +42,7 @@ Implement code per Spec using strict TDD.
 /project-act STORY-001
 ```
 
-Runs: read Spec → detect stack → write tests (RED) → implement (GREEN) → verify suite.
+Runs: read Spec → detect stack → write tests (RED) → implement (GREEN) → lint check → verify suite.
 
 ### `/project-check`
 
@@ -62,7 +62,7 @@ Finalize delivery with regression gate and conventional commit.
 /project-done
 ```
 
-Runs: cleanup → regression gate → board hygiene → archive → commit. Includes `pactkit-release` skill for version release scenarios.
+Runs: cleanup → regression gate → lint gate → HLD consistency check → rules.md invariants refresh → board hygiene → archive → snapshot verification → commit. Includes `pactkit-release` skill for version release scenarios.
 
 ## Automation
 
@@ -106,4 +106,4 @@ Initialize project scaffolding and governance structure.
 /project-init
 ```
 
-Sets up the directory structure, architecture graphs, and initial governance files. Uses `pactkit-status` and `pactkit-doctor` skills for health checks.
+Sets up the directory structure, architecture graphs, initial governance files, and a project-level `.claude/CLAUDE.md`. Uses `pactkit-status` and `pactkit-doctor` skills for health checks.

@@ -41,7 +41,8 @@ The developer implements code strictly per Spec, following TDD:
 1. **Read Spec** — understand the requirements
 2. **Test First** — write unit tests (RED)
 3. **Implement** — write code to make tests pass (GREEN)
-4. **Verify** — ensure the full test suite passes
+4. **Lint Check** — run linter if CI config exists (e.g., `ruff check` for Python)
+5. **Verify** — ensure the full test suite passes
 
 ### 3. Check (`/project-check`)
 
@@ -64,9 +65,12 @@ The maintainer finalizes the delivery:
 
 1. **Clean** — remove temporary files
 2. **Regression Gate** — run full test suite; stop if anything fails
-3. **Hygiene** — confirm all Board tasks are checked off
-4. **Archive** — move completed Stories to archive
-5. **Commit** — conventional commit (`feat(scope): description`)
+3. **Lint Gate** — run linter if CI config exists; stop if lint fails
+4. **Architecture Maintenance** — verify `system_design.mmd` component counts, refresh `rules.md` test invariants
+5. **Hygiene** — confirm all Board tasks are checked off
+6. **Archive** — move completed Stories to archive
+7. **Release** (conditional) — version bump, snapshot, snapshot verification
+8. **Commit** — conventional commit (`feat(scope): description`)
 
 ## Sprint Automation
 

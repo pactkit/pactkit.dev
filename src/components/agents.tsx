@@ -10,7 +10,7 @@ const agents = [
   { name: "Senior Developer", role: "Full-stack development", desc: "TDD loop, call chain analysis, hotfix" },
   { name: "QA Engineer", role: "Quality gates", desc: "Deep check (P0-P3), PR review" },
   { name: "Security Auditor", role: "Security audit", desc: "OWASP scanning, threat modeling" },
-  { name: "Repo Maintainer", role: "Repository ops", desc: "Cleanup, archiving, Git conventions, releases" },
+  { name: "Repo Maintainer", role: "Repository ops", desc: "Cleanup, archiving, architecture maintenance, releases" },
   { name: "System Medic", role: "System diagnostics", desc: "Configuration drift repair" },
   { name: "Visual Architect", role: "Architecture visualization", desc: "Draw.io XML generation" },
   { name: "Code Explorer", role: "Code tracing", desc: "Call graph + sequence diagram" },
