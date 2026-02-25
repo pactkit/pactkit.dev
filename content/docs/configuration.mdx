@@ -32,17 +32,18 @@ The `pactkit.yaml` file controls which components are deployed and how they beha
 |-------|------|---------|-------------|
 | `stack` | string | auto-detected | Project stack (`python`, `node`, `go`, `java`) |
 | `version` | string | current | PactKit version that generated the config |
-| `root` | string | `~/.claude` | Deployment root directory |
+| `root` | string | `.` | Project root directory (deployment target resolves to `~/.claude` by default) |
 | `agents` | list | all 9 | Agent definitions to deploy |
 | `commands` | list | all 8 | Command playbooks to deploy |
 | `skills` | list | all 9 | Skills to deploy |
 | `rules` | list | all 6 | Constitution rule modules to deploy |
-| `exclude` | list | `[]` | Components to exclude from deployment |
+| `exclude` | object | `{}` | Components to exclude (e.g., `exclude.agents: [agent-name]`, `exclude.commands: [cmd-name]`) |
 | `ci` | object | `provider: none` | CI/CD pipeline generation (`github`, `gitlab`, `none`) |
 | `issue_tracker` | object | `provider: none` | External issue tracker (`github`, `none`) |
 | `hooks` | object | disabled | Opt-in hook templates (pre-commit, post-test, pre-push) |
 | `lint_blocking` | bool | `false` | Whether lint failures block commits in Done command |
 | `auto_fix` | bool | `false` | Whether to auto-fix lint errors before checking |
+| `agent_models` | object | `{}` | Per-agent model overrides (values: `haiku`, `sonnet`, `opus`, `inherit`) |
 | `rule_scopes` | object | `{}` | Map rule IDs to glob patterns for context-aware scoping |
 
 <Callout type="info">
@@ -55,7 +56,7 @@ The 6 rule modules form the "constitution" that governs agent behavior:
 
 | Module | Purpose |
 |--------|---------|
-| **Core Protocol** | Think-hard mode, atomic tools preference, Visual First, strict TDD, output conventions |
+| **Core Protocol** | Session Context, Visual First, Strict TDD, Language Matching |
 | **Hierarchy of Truth** | Spec > Tests > Code precedence, conflict resolution rules |
 | **File Atlas** | Standard file locations and their purposes |
 | **Routing Table** | Maps commands to agents and playbooks |
