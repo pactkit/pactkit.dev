@@ -19,7 +19,7 @@ Fetch up-to-date library documentation and code examples.
 
 Search, browse, and install UI components from shadcn registries.
 
-- **Tools**: `search_items_in_registries`, `view_items_in_registries`, `get_add_command_for_items`
+- **Tools**: `search_items_in_registries`, `view_items_in_registries`, `get_item_examples_from_registries`, `get_add_command_for_items`
 - **When**: Project has a `components.json` file (shadcn is configured)
 - **Phase**: Design
 
@@ -27,7 +27,7 @@ Search, browse, and install UI components from shadcn registries.
 
 Browser automation for testing — snapshots, clicks, screenshots, form filling.
 
-- **Tools**: `browser_navigate`, `browser_snapshot`, `browser_click`, `browser_take_screenshot`
+- **Tools**: `browser_navigate`, `browser_snapshot`, `browser_click`, `browser_take_screenshot`, `browser_fill_form`
 - **When**: Running browser-level QA checks
 - **Phase**: Check
 
@@ -35,7 +35,7 @@ Browser automation for testing — snapshots, clicks, screenshots, form filling.
 
 Performance tracing, console message inspection, network request analysis.
 
-- **Tools**: `performance_start_trace`, `list_console_messages`, `list_network_requests`
+- **Tools**: `performance_start_trace`, `list_console_messages`, `list_network_requests`, `take_snapshot`, `take_screenshot`
 - **When**: Performance or runtime diagnostics needed
 - **Phase**: Check
 
@@ -43,9 +43,10 @@ Performance tracing, console message inspection, network request analysis.
 
 Persistent knowledge graph for cross-session context.
 
-- **Tools**: `create_entities`, `create_relations`, `add_observations`, `search_nodes`
+- **Tools**: `create_entities`, `create_relations`, `add_observations`, `search_nodes`, `read_graph`
 - **When**: Storing or retrieving architectural decisions across sessions
 - **Phase**: Plan, Act, Done
+- **Entity naming**: Use `{STORY_ID}` (e.g., `STORY-037`) as entity name, `entityType: "story"`
 
 ### Draw.io
 
