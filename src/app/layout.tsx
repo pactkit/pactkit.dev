@@ -14,14 +14,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PactKit — Spec-Driven Agentic DevOps Toolkit",
+  title: "PactKit — Spec-Driven Agentic Development Toolkit",
   description:
     "Compile development workflows, role definitions, and behavioral rules into executable constitutions and playbooks for AI coding assistants.",
   metadataBase: new URL("https://pactkit.dev"),
   openGraph: {
     title: "PactKit — Code by Contract",
     description:
-      "Spec-driven agentic DevOps toolkit for AI coding assistants. 9 agents, 13 commands, full PDCA lifecycle.",
+      "Spec-driven agentic Development toolkit for AI coding assistants. 9 agents, 13 commands, full PDCA lifecycle.",
     url: "https://pactkit.dev",
     siteName: "PactKit",
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PactKit — Code by Contract",
     description:
-      "Spec-driven agentic DevOps toolkit for AI coding assistants.",
+      "Spec-driven agentic Development toolkit for AI coding assistants.",
   },
 };
 

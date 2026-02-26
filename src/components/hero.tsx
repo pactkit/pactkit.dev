@@ -15,7 +15,7 @@ export function Hero() {
           priority
         />
         <p className="mb-4 text-sm font-medium tracking-widest uppercase text-muted-foreground">
-          Spec-Driven Agentic DevOps
+          Spec-Driven Agentic Development
         </p>
         <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
           Code by Contract
