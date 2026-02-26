@@ -7,7 +7,7 @@ export function Hero() {
     <section className="relative overflow-hidden border-b border-border">
       <div className="mx-auto max-w-5xl px-6 py-24 text-center sm:py-32">
         <Image
-          src="/logo.png"
+          src="/logo.jpg"
           alt="PactKit"
           width={360}
           height={180}
