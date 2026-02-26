@@ -1,14 +1,14 @@
 ---
 title: Skills
-description: 9 skill tools powering the PDCA workflow
+description: 10 skill tools powering the PDCA workflow
 ---
 
-PactKit includes 9 skills — modular tools that agents invoke during workflows. Skills can be called directly (e.g., `/pactkit-draw`) or are auto-invoked by commands at the right moment.
+PactKit includes 10 skills — modular tools that agents invoke during workflows. Skills can be called directly (e.g., `/pactkit-draw`) or are auto-invoked by commands at the right moment.
 
 | Type | Count | Description |
 |------|-------|-------------|
 | **Scripted** | 3 | Python scripts with executable logic |
-| **Prompt-only** | 6 | Prompt templates embedded in PDCA commands |
+| **Prompt-only** | 7 | Prompt templates embedded in PDCA commands |
 
 ## Scripted Skills
 
@@ -86,6 +86,16 @@ When Draw.io MCP server is available, diagrams open instantly in the editor for 
 ```
 
 **Embedded in**: `/project-plan` (Phase 2), `/project-design` (Phase 2)
+
+### pactkit-analyze
+
+Cross-artifact consistency check between Spec, Sprint Board, and Test Cases. Detects misalignment (missing tasks, scope creep, uncovered ACs) at the cheapest point — before any code is written.
+
+```
+/pactkit-analyze STORY-042
+```
+
+**Embedded in**: `/project-act` (Phase 0.6, advisory/non-blocking)
 
 ### pactkit-status
 

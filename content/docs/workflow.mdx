@@ -26,12 +26,13 @@ Before understanding the workflow, you must understand the governance model:
 The architect analyzes requirements and produces a Spec:
 
 0. **Init Guard** — automatically checks if the project is initialized; runs `/project-init` if needed. Also verifies `pactkit.yaml` completeness and backfills missing sections.
-1. **Visual Scan** — run `visualize` to understand current codebase structure
-2. **Logic Trace** — if modifying existing logic, uses the `pactkit-trace` skill
-3. **Design** — update the high-level design diagram
-4. **Spec** — create `docs/specs/{ID}.md` with RFC 2119 requirements and Given/When/Then acceptance criteria
-5. **Board** — add a Story to the Sprint Board
-6. **Context** — update `docs/product/context.md` for cross-session awareness
+1. **Clarify Gate** — auto-detects ambiguous requirements (missing quantitative metrics, unclear boundaries, vague scope). Generates structured questions and collects user answers before proceeding. Greenfield projects force-trigger clarification.
+2. **Visual Scan** — run `visualize` to understand current codebase structure
+3. **Logic Trace** — if modifying existing logic, uses the `pactkit-trace` skill
+4. **Design** — update the high-level design diagram
+5. **Spec** — create `docs/specs/{ID}.md` with RFC 2119 requirements and Given/When/Then acceptance criteria. **Spec Lint self-check** validates structural completeness before handoff.
+6. **Board** — add a Story to the Sprint Board
+7. **Context** — update `docs/product/context.md` for cross-session awareness
 
 ### 2. Act (`/project-act`)
 
@@ -40,10 +41,12 @@ The architect analyzes requirements and produces a Spec:
 The developer implements code strictly per Spec, following TDD:
 
 1. **Read Spec** — understand the requirements
-2. **Test First** — write unit tests (RED)
-3. **Implement** — write code to make tests pass (GREEN), with a 5-iteration cap
-4. **Lint Check** — run linter if CI config exists (e.g., `ruff check` for Python)
-5. **Verify** — ensure the full test suite passes
+2. **Spec Lint Gate** — non-AI structural validation of the Spec (metadata, required sections, Given/When/Then). Blocks on errors; continues with warnings.
+3. **Consistency Check** — cross-references Spec requirements with Board tasks and ACs with Test Case scenarios. Advisory only (never blocks).
+4. **Test First** — write unit tests (RED)
+5. **Implement** — write code to make tests pass (GREEN), with a 5-iteration cap
+6. **Lint Check** — run linter if CI config exists (e.g., `ruff check` for Python)
+7. **Verify** — ensure the full test suite passes
 
 <Callout type="info">
 **Environment Bailout**: If a test fails with an environment error (missing package, connection refused), the developer distinguishes between project-internal modules (keep coding) and third-party dependencies (stop and report). This prevents false stops during normal development.
@@ -78,7 +81,8 @@ The maintainer finalizes the delivery:
 8. **Deploy Verify** — if a deployer exists, run it and smoke-test artifacts
 9. **Release** (conditional) — version bump, snapshot, snapshot verification
 10. **Commit** — conventional commit (`feat(scope): description`)
-11. **Context** — update `docs/product/context.md` for next session
+11. **Auto-PR** — generates structured PR body from Spec, Board, and test results. Includes Summary, Changes, Acceptance Criteria checklist, and Test Results. User confirmation required before creation.
+12. **Context** — update `docs/product/context.md` for next session
 
 ## Session Context
 

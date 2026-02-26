@@ -1,24 +1,35 @@
 ---
 title: Command Reference
-description: 8 commands covering the full PDCA lifecycle
+description: 9 commands covering the full PDCA lifecycle
 ---
 
 ## Overview
 
-PactKit provides 8 commands as workflow entry points. Six former utility commands (trace, draw, doctor, status, review, release) are now [skills](/docs/skills) — embedded into the PDCA commands and auto-invoked at the right moment.
+PactKit provides 9 commands as workflow entry points. Six former utility commands (trace, draw, doctor, status, review, release) are now [skills](/docs/skills) — embedded into the PDCA commands and auto-invoked at the right moment.
 
 | Command | Agent | Description |
 |---------|-------|-------------|
 | `/project-init` | System Architect | Initialize project scaffolding and governance |
-| `/project-plan` | System Architect | Analyze requirements, create Spec and Story |
-| `/project-act` | Senior Developer | Implement code per Spec with TDD |
+| `/project-clarify` | System Architect | Surface ambiguities and produce a clarified brief |
+| `/project-plan` | System Architect | Clarify gate → Analyze requirements → create Spec and Story |
+| `/project-act` | Senior Developer | Spec lint → Consistency check → TDD implementation |
 | `/project-check` | QA Engineer | 6-phase deep audit |
-| `/project-done` | Repo Maintainer | Regression gate, archive, commit |
+| `/project-done` | Repo Maintainer | Regression gate → Auto-PR → archive → commit |
 | `/project-sprint` | Team Lead | Automated PDCA orchestration |
 | `/project-hotfix` | Senior Developer | Fast-track fix bypassing PDCA |
 | `/project-design` | Product Designer | PRD generation, story decomposition |
 
 ## PDCA Core Commands
+
+### `/project-clarify`
+
+Surface ambiguities before planning. Standalone command or auto-invoked by Plan.
+
+```
+/project-clarify "Add user authentication"
+```
+
+Runs: ambiguity detection → structured questions (Scope, Users, Constraints, Scale, Edge Cases, Non-Goals) → clarified brief output. The brief can be fed directly into `/project-plan`.
 
 ### `/project-plan`
 
@@ -28,7 +39,7 @@ Analyze requirements and produce a Spec.
 /project-plan "Add user authentication with OAuth2"
 ```
 
-Runs: **Init Guard** → visual scan → logic trace (via `pactkit-trace` skill) → design update → Spec creation → Board entry.
+Runs: **Init Guard** → **Clarify Gate** (auto-detects ambiguous input, generates questions) → visual scan → logic trace (via `pactkit-trace` skill) → design update → Spec creation (with **Spec Lint self-check**) → Board entry.
 
 <Callout type="info">
 **Init Guard**: Before proceeding, this command automatically checks for `.claude/pactkit.yaml`, `docs/product/sprint_board.md`, and `docs/architecture/graphs/`. If any are missing, it runs `/project-init` first — so you never have to worry about forgetting to initialize.
@@ -42,7 +53,7 @@ Implement code per Spec using strict TDD.
 /project-act STORY-001
 ```
 
-Runs: read Spec → detect stack → write tests (RED) → implement (GREEN) → lint check → verify suite.
+Runs: read Spec → **Spec Lint Gate** (structural validation — blocks on errors) → **Consistency Check** (Spec ↔ Board ↔ Test Case alignment, advisory) → detect stack → write tests (RED) → implement (GREEN) → lint check → verify suite.
 
 ### `/project-check`
 
@@ -62,7 +73,7 @@ Finalize delivery with regression gate and conventional commit.
 /project-done
 ```
 
-Runs: cleanup → regression gate → lint gate → HLD consistency check → rules.md invariants refresh → board hygiene → archive → snapshot verification → commit. Includes `pactkit-release` skill for version release scenarios.
+Runs: cleanup → regression gate → lint gate → HLD consistency check → rules.md invariants refresh → board hygiene → archive → snapshot verification → commit → **Auto-PR** (structured PR body from Spec + test results, with user confirmation). Includes `pactkit-release` skill for version release scenarios.
 
 ## Automation
 
