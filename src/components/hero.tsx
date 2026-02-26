@@ -1,10 +1,19 @@
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-border">
       <div className="mx-auto max-w-5xl px-6 py-24 text-center sm:py-32">
+        <Image
+          src="/logo.png"
+          alt="PactKit"
+          width={360}
+          height={180}
+          className="mx-auto mb-8"
+          priority
+        />
         <p className="mb-4 text-sm font-medium tracking-widest uppercase text-muted-foreground">
           Spec-Driven Agentic DevOps
         </p>
@@ -42,9 +51,9 @@ export function Hero() {
         <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
           <span>9 Agents</span>
           <span className="text-border">|</span>
-          <span>8 Commands</span>
+          <span>9 Commands</span>
           <span className="text-border">|</span>
-          <span>9 Skills</span>
+          <span>10 Skills</span>
           <span className="text-border">|</span>
           <span>Full PDCA Lifecycle</span>
           <span className="text-border">|</span>
