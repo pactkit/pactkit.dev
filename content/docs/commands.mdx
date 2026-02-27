@@ -13,7 +13,7 @@ PactKit provides 9 commands as workflow entry points. Six former utility command
 | `/project-clarify` | System Architect | Surface ambiguities and produce a clarified brief |
 | `/project-plan` | System Architect | Clarify gate → Analyze requirements → create Spec and Story |
 | `/project-act` | Senior Developer | Spec lint → Consistency check → TDD implementation |
-| `/project-check` | QA Engineer | 6-phase deep audit |
+| `/project-check` | QA Engineer | 8-item security checklist + quality audit |
 | `/project-done` | Repo Maintainer | Regression gate → Auto-PR → archive → commit |
 | `/project-sprint` | Team Lead | Automated PDCA orchestration |
 | `/project-hotfix` | Senior Developer | Fast-track fix bypassing PDCA |
@@ -57,13 +57,13 @@ Runs: read Spec → **Spec Lint Gate** (structural validation — blocks on erro
 
 ### `/project-check`
 
-Run a 6-phase deep audit.
+Run a comprehensive QA audit with structured security checklist.
 
 ```
 /project-check
 ```
 
-Runs: security scan → test case gen → layer decision → execution → Spec alignment → verdict. Includes `pactkit-review` skill for PR code review scenarios.
+Runs: **8-item security checklist** (SEC-1 to SEC-8, PASS/FAIL/N/A) → code quality scan → test case gen → layer decision → execution → Spec alignment → verdict. SEC-1 through SEC-5 failures are classified as P0 Critical. Includes `pactkit-review` skill for PR code review scenarios.
 
 ### `/project-done`
 
