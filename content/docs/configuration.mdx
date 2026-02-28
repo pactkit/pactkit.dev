@@ -21,7 +21,7 @@ This page covers the **pip install** deployment. If you installed via the [Claud
 | `rules/05-workflow-conventions.md` | Git/PR conventions |
 | `rules/06-mcp-integration.md` | MCP server integration |
 | `agents/*.md` | 9 agent definitions |
-| `commands/*.md` | 9 command playbooks |
+| `commands/*.md` | 11 command playbooks |
 | `skills/*/` | 10 skills (3 scripted + 7 prompt-only) |
 
 ## pactkit.yaml Reference
@@ -34,7 +34,7 @@ The `pactkit.yaml` file controls which components are deployed and how they beha
 | `version` | string | current | PactKit version that generated the config |
 | `root` | string | `.` | Project root directory (deployment target resolves to `~/.claude` by default) |
 | `agents` | list | all 9 | Agent definitions to deploy |
-| `commands` | list | all 9 | Command playbooks to deploy |
+| `commands` | list | all 11 | Command playbooks to deploy |
 | `skills` | list | all 10 | Skills to deploy |
 | `rules` | list | all 6 | Constitution rule modules to deploy |
 | `exclude` | object | `{}` | Components to exclude (e.g., `exclude.agents: [agent-name]`, `exclude.commands: [cmd-name]`) |

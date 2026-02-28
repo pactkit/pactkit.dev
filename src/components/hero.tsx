@@ -51,7 +51,7 @@ export function Hero() {
         <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
           <span>9 Agents</span>
           <span className="text-border">|</span>
-          <span>9 Commands</span>
+          <span>11 Commands</span>
           <span className="text-border">|</span>
           <span>10 Skills</span>
           <span className="text-border">|</span>

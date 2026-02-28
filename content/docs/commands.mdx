@@ -1,11 +1,11 @@
 ---
 title: Command Reference
-description: 9 commands covering the full PDCA lifecycle
+description: 11 commands covering the full PDCA lifecycle
 ---
 
 ## Overview
 
-PactKit provides 9 commands as workflow entry points. Six former utility commands (trace, draw, doctor, status, review, release) are now [skills](/docs/skills) — embedded into the PDCA commands and auto-invoked at the right moment.
+PactKit provides 11 commands as workflow entry points. Six former utility commands (trace, draw, doctor, status, review, release) are now [skills](/docs/skills) — embedded into the PDCA commands and auto-invoked at the right moment.
 
 | Command | Agent | Description |
 |---------|-------|-------------|
@@ -18,6 +18,8 @@ PactKit provides 9 commands as workflow entry points. Six former utility command
 | `/project-sprint` | Team Lead | Automated PDCA orchestration |
 | `/project-hotfix` | Senior Developer | Fast-track fix bypassing PDCA |
 | `/project-design` | Product Designer | PRD generation, story decomposition |
+| `/project-release` | Repo Maintainer | Version release: snapshot, archive, and Git tag |
+| `/project-pr` | Repo Maintainer | Push branch and create pull request via gh CLI |
 
 ## PDCA Core Commands
 
@@ -118,3 +120,23 @@ Initialize project scaffolding and governance structure.
 ```
 
 Sets up the directory structure, architecture graphs, initial governance files, and a project-level `.claude/CLAUDE.md`. Uses `pactkit-status` and `pactkit-doctor` skills for health checks.
+
+### `/project-release`
+
+Version release workflow: snapshot, archive, and Git tag.
+
+```
+/project-release
+```
+
+Runs: version bump → architecture snapshot → story archive → Git tag creation. Uses `pactkit-release` skill for snapshot and archive operations.
+
+### `/project-pr`
+
+Push branch and create a pull request via `gh` CLI.
+
+```
+/project-pr
+```
+
+Runs: push current branch to remote → create pull request with structured body (Summary + Test Plan) derived from Spec and test results. Requires `gh` CLI to be installed and authenticated.

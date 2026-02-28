@@ -1,26 +1,30 @@
 import { Badge } from "@/components/ui/badge";
 
 const commands = [
+  { cmd: "/project-init", agent: "System Architect", desc: "Project scaffolding, governance, .claude/CLAUDE.md" },
+  { cmd: "/project-clarify", agent: "System Architect", desc: "Surface ambiguities, produce a clarified brief" },
   { cmd: "/project-plan", agent: "System Architect", desc: "Codebase scan, Spec generation, Board entry" },
   { cmd: "/project-act", agent: "Senior Developer", desc: "Visual scan, TDD loop, Lint check, Regression check" },
   { cmd: "/project-check", agent: "QA + Security", desc: "6-phase deep audit (Security/Quality/Spec)" },
   { cmd: "/project-done", agent: "Repo Maintainer", desc: "Regression + lint gate, Architecture check, Archive, Commit" },
+  { cmd: "/project-release", agent: "Repo Maintainer", desc: "Version release: snapshot, archive, and Git tag" },
+  { cmd: "/project-pr", agent: "Repo Maintainer", desc: "Push branch and create pull request via gh CLI" },
   { cmd: "/project-sprint", agent: "Team Lead", desc: "One-command automated PDCA orchestration" },
   { cmd: "/project-hotfix", agent: "Senior Developer", desc: "Fast-track fix bypassing PDCA" },
   { cmd: "/project-design", agent: "Product Designer", desc: "PRD generation, Story decomposition, Board setup" },
-  { cmd: "/project-init", agent: "System Architect", desc: "Project scaffolding, governance, .claude/CLAUDE.md" },
 ];
 
 const skills = [
+  { name: "pactkit-visualize", embeddedIn: "Plan, Act", desc: "Code dependency graph (Mermaid)" },
+  { name: "pactkit-board", embeddedIn: "Plan, Done", desc: "Sprint board operations" },
+  { name: "pactkit-scaffold", embeddedIn: "Plan, Act", desc: "File scaffolding: Spec, tests, branches" },
   { name: "pactkit-trace", embeddedIn: "Plan, Act", desc: "Call graph tracing, Sequence diagram" },
   { name: "pactkit-draw", embeddedIn: "Plan, Design", desc: "Generate Draw.io XML architecture diagrams" },
+  { name: "pactkit-analyze", embeddedIn: "Act", desc: "Cross-artifact consistency check (Spec/Board/Test Cases)" },
   { name: "pactkit-status", embeddedIn: "Init", desc: "Cold-start project overview" },
   { name: "pactkit-doctor", embeddedIn: "Init", desc: "Configuration drift detection, Health report" },
   { name: "pactkit-review", embeddedIn: "Check", desc: "PR review with SOLID/Security/Quality checklists" },
   { name: "pactkit-release", embeddedIn: "Done", desc: "Version bump, Archive, Git tag, Changelog" },
-  { name: "pactkit-visualize", embeddedIn: "Plan, Act", desc: "Code dependency graph (Mermaid)" },
-  { name: "pactkit-board", embeddedIn: "Plan, Done", desc: "Sprint board operations" },
-  { name: "pactkit-scaffold", embeddedIn: "Plan, Act", desc: "File scaffolding: Spec, tests, branches" },
 ];
 
 export function Workflow() {
@@ -31,7 +35,7 @@ export function Workflow() {
           PDCA+ Workflow
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-muted-foreground">
-          8 commands and 9 skills covering the full software development lifecycle.
+          11 commands and 10 skills covering the full software development lifecycle.
         </p>
 
         <h3 className="mt-12 mb-4 text-lg font-semibold">Commands</h3>
