@@ -19,6 +19,30 @@ PactKit deploys 9 specialized agents, each with **constrained tools** and **focu
 | Code Explorer | Call graph tracing | Read, Bash, Grep, Glob |
 | Product Designer | PRD, story decomposition | Read, Write, Edit, Bash, Glob, Grep |
 
+## OpenCode Agent Format
+
+When deployed to OpenCode (`pactkit init --format opencode`), agent files are converted to OpenCode-native format:
+
+| Feature | Claude Code | OpenCode |
+|---------|-------------|----------|
+| Identification | `name:` in frontmatter | Filename (e.g., `system-architect.md`) |
+| Mode | N/A | `mode: subagent` |
+| Tools | String (`"Read, Write, Edit"`) | Record (`{ read: true, write: true, edit: true }`) |
+| Model | `model: inherit` | Omitted (inherits by default), or set in `opencode.json` |
+| Claude-only fields | `permissionMode`, `memory`, `skills` | Removed |
+
+Model routing in OpenCode is configured via `opencode.json`:
+
+```json
+{
+  "agent": {
+    "system-architect": { "model": "provider/claude-opus-4.6" },
+    "senior-developer": { "model": "provider/claude-sonnet-4.6" },
+    "code-explorer": { "model": "provider/claude-haiku-4.5" }
+  }
+}
+```
+
 ## Detailed Roles
 
 ### System Architect

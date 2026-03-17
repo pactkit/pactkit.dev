@@ -44,7 +44,7 @@ Analyze requirements and produce a Spec.
 Runs: **Init Guard** → **Clarify Gate** (auto-detects ambiguous input, generates questions) → visual scan → logic trace (via `pactkit-trace` skill) → design update → Spec creation (with **Spec Lint self-check**) → Board entry.
 
 <Callout type="info">
-**Init Guard**: Before proceeding, this command automatically checks for `.claude/pactkit.yaml`, `docs/product/sprint_board.md`, and `docs/architecture/graphs/`. If any are missing, it runs `/project-init` first — so you never have to worry about forgetting to initialize.
+**Init Guard**: Before proceeding, this command automatically checks for `pactkit.yaml` (in `.claude/` or `.opencode/`), `docs/product/sprint_board.md`, and `docs/architecture/graphs/`. If any are missing, it runs `/project-init` first — so you never have to worry about forgetting to initialize.
 </Callout>
 
 ### `/project-act`
@@ -119,7 +119,7 @@ Initialize project scaffolding and governance structure.
 /project-init
 ```
 
-Sets up the directory structure, architecture graphs, initial governance files, and a project-level `.claude/CLAUDE.md`. Uses `pactkit-status` and `pactkit-doctor` skills for health checks.
+Sets up the directory structure, architecture graphs, initial governance files, and project-level instructions. For Claude Code: `.claude/CLAUDE.md`. For OpenCode: `./AGENTS.md` + `opencode.json` with permission and MCP config.
 
 ### `/project-release`
 
@@ -140,3 +140,14 @@ Push branch and create a pull request via `gh` CLI.
 ```
 
 Runs: push current branch to remote → create pull request with structured body (Summary + Test Plan) derived from Spec and test results. Requires `gh` CLI to be installed and authenticated.
+
+## OpenCode Model Routing
+
+When deployed to OpenCode, commands include a `model:` field in their frontmatter for automatic model routing:
+
+| Commands | Model | Reason |
+|----------|-------|--------|
+| `/project-plan`, `/project-clarify`, `/project-design`, `/project-sprint` | Inherit main model | Deep reasoning tasks |
+| `/project-act`, `/project-done`, `/project-check`, `/project-init`, `/project-release`, `/project-pr`, `/project-hotfix` | Sonnet | Implementation tasks |
+
+This is configurable via `command_models` in `pactkit.yaml`. Model shortnames (`sonnet`, `opus`, `haiku`) are automatically resolved to full `provider/model-id` format from your `opencode.json` provider configuration.

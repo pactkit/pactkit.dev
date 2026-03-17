@@ -82,3 +82,34 @@ ELSE:
 ```
 
 No MCP server is required for PactKit to function. They enhance the workflow when present but are never a hard dependency.
+
+## OpenCode MCP Configuration
+
+For OpenCode users, MCP servers are configured in `opencode.json`:
+
+```json
+{
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"]
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp"]
+    }
+  }
+}
+```
+
+OpenCode supports two MCP types:
+- **Remote**: `type: "remote"` with a `url` — no local installation needed (e.g., Context7)
+- **Local**: `type: "local"` with a `command` — runs via npx (e.g., Memory, Playwright)
+
+<Callout type="info">
+When deploying with `pactkit init --format opencode`, the project-level `opencode.json` is pre-configured with Context7 as a remote MCP. Add other servers manually as needed.
+</Callout>

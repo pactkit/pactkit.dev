@@ -136,3 +136,16 @@ Version release workflow: version bump, architecture snapshot, archive, and git 
 ```
 
 **Embedded in**: `/project-done` (Phase 3.8, release variant)
+
+## OpenCode Skill Format
+
+When deployed to OpenCode (`pactkit init --format opencode`), skills are placed in `~/.config/opencode/skills/` with OpenCode-native `SKILL.md` frontmatter:
+
+```yaml
+---
+name: pactkit-visualize
+description: "Generate project code dependency graph (Mermaid)"
+---
+```
+
+OpenCode automatically discovers skills via the `name` and `description` fields in the frontmatter. Script paths are rewritten from `~/.claude/skills/` to `~/.config/opencode/skills/` during deployment.
