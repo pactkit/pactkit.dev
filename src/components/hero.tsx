@@ -23,8 +23,9 @@ export function Hero() {
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
           Ship features with AI agents that follow specs, not vibes.
           <br />
-          One <code className="text-foreground/80">pip install</code> gives Claude Code
+          One <code className="text-foreground/80">pip install</code> gives AI coding assistants
           a structured operating system — specs before code, TDD by default, safe regression gates.
+          Works with Claude Code and OpenCode.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">

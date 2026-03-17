@@ -18,12 +18,15 @@ export function QuickStart() {
           <Step
             number={2}
             title="Deploy"
-            code={`# Deploy 11 commands + 9 agents + 10 skills
-pactkit init`}
+            code={`# Claude Code
+pactkit init
+
+# OpenCode
+pactkit init --format opencode`}
           />
           <Step
             number={3}
-            title="Use in Claude Code"
+            title="Use"
             code={`/project-plan "Add user authentication"
 /project-act STORY-001
 /project-check
