@@ -3,11 +3,11 @@ title: Installation
 description: Install and deploy PactKit
 ---
 
-PactKit offers two installation methods. Choose the one that fits your workflow.
+PactKit supports multiple AI coding tools and installation methods.
 
-## Option A: Claude Code Plugin (Recommended)
+## Option A: Claude Code Plugin (Recommended for Claude Code)
 
-The simplest way to install. No Python required.
+The simplest way to install for Claude Code users. No Python required.
 
 ```bash
 # In Claude Code:
@@ -45,24 +45,19 @@ Add the following to your project's `.claude/settings.json` to auto-prompt teamm
 }
 ```
 
-## Option B: pip Install
+## Option B: pip Install (Claude Code)
 
-For users who want fine-grained control via `pactkit.yaml`.
+For Claude Code users who want fine-grained control via `pactkit.yaml`.
 
 ### Requirements
 
 - **Python 3.10+**
 - **Claude Code** CLI installed and configured
 
-### Install
+### Install & Deploy
 
 ```bash
 pip install pactkit
-```
-
-### Deploy
-
-```bash
 pactkit init
 ```
 
@@ -70,30 +65,81 @@ This deploys the complete toolkit to `~/.claude/`:
 
 | Path | Contents |
 |------|----------|
-| `CLAUDE.md` | Global constitution (references 6 rule modules) |
-| `rules/` | 6 modular rule files |
+| `CLAUDE.md` | Constitution root (references 7 rule modules via `@import`) |
+| `rules/` | 7 modular rule files |
 | `agents/` | 9 agent definitions |
 | `commands/` | 11 command playbooks |
 | `skills/` | 10 skills (3 scripted + 7 prompt-only) |
 
-### Selective Deployment
-
-Edit `.claude/pactkit.yaml` (in your project root) to disable specific components, then re-deploy:
-
-```bash
-pactkit update
-```
-
-See [Configuration](/docs/configuration) for details on `pactkit.yaml`.
-
-### Upgrade
+### Update & Upgrade
 
 ```bash
 pip install --upgrade pactkit
 pactkit update
 ```
 
-The `update` command re-deploys all files. Your custom rules (files without managed prefixes like `01-` through `06-`) are preserved.
+## Option C: pip Install (OpenCode)
+
+For [OpenCode](https://opencode.ai) users.
+
+### Requirements
+
+- **Python 3.10+**
+- **OpenCode** installed
+
+### Install & Deploy
+
+```bash
+pip install pactkit
+pactkit init --format opencode
+```
+
+This deploys to `~/.config/opencode/` with OpenCode-native formats:
+
+| Path | Contents |
+|------|----------|
+| `AGENTS.md` | Slim header (rules loaded via `opencode.json` instructions) |
+| `rules/` | 7 modular rule files (loaded via `instructions: ["rules/*.md"]`) |
+| `agents/` | 9 agent definitions (`mode: subagent`, tools as record format) |
+| `commands/` | 11 command playbooks (`agent: build` + `model:` routing) |
+| `skills/` | 10 skills (with `SKILL.md` frontmatter for auto-discovery) |
+| `opencode.json` | Global config (instructions, preserves user `provider` config) |
+
+### Key Differences from Claude Code
+
+| Feature | Claude Code | OpenCode |
+|---------|-------------|----------|
+| Rules loading | `@import` in CLAUDE.md | `instructions: ["rules/*.md"]` in opencode.json |
+| Agent format | `name:`, `permissionMode:`, string tools | `mode: subagent`, no `name`, record tools |
+| Command frontmatter | `allowed-tools: [...]` | `agent: build` + `model: provider/model-id` |
+| Config file | `.claude/pactkit.yaml` | `.opencode/pactkit.yaml` |
+| Model routing | Prompt-level suggestion | Config-level enforcement via `model:` frontmatter |
+
+### Model Routing
+
+OpenCode commands automatically route to appropriate models:
+
+| Commands | Model | Reason |
+|----------|-------|--------|
+| `/project-plan`, `/project-clarify`, `/project-design` | Inherit main model | Deep reasoning tasks |
+| `/project-act`, `/project-done`, `/project-check`, etc. | Sonnet | Implementation tasks |
+| Background (title, compression) | Haiku (`small_model`) | Lightweight tasks |
+
+Configure in `pactkit.yaml`:
+
+```yaml
+command_models:
+  project-act: sonnet
+  project-done: sonnet
+  project-check: sonnet
+```
+
+### Update & Upgrade
+
+```bash
+pip install --upgrade pactkit
+pactkit upgrade --format opencode
+```
 
 ### Other Commands
 
@@ -103,24 +149,32 @@ pactkit version
 
 # Preview to custom directory
 pactkit init -t /tmp/preview
-
-# Generate a standalone plugin directory
-pactkit init --format plugin -t ./pactkit-plugin
-
-# Generate a marketplace repository
-pactkit init --format marketplace -t ./pactkit-marketplace
+pactkit init --format opencode -t /tmp/oc-preview
 ```
 
 ## Project Initialization
 
-After installing PactKit (via either method), initialize each project you work on:
+After installing PactKit (via any method), initialize each project you work on:
 
 ```bash
 /project-init
 ```
 
-This creates the governance structure (`docs/specs/`, `docs/product/sprint_board.md`, `docs/architecture/graphs/`, etc.) and a project-level `.claude/CLAUDE.md` with architecture overview, dev commands, and context references.
+This creates the governance structure (`docs/specs/`, `docs/product/sprint_board.md`, `docs/architecture/graphs/`, etc.) and environment-appropriate project instructions:
+
+- **Claude Code**: `.claude/CLAUDE.md` with architecture overview, dev commands, and `@` references
+- **OpenCode**: `./AGENTS.md` + `opencode.json` with `permission`, `mcp` template, and `instructions`
 
 <Callout type="info">
 **Forgot to initialize?** No problem — `/project-plan` and `/project-doctor` automatically detect uninitialized projects and handle it for you.
 </Callout>
+
+## Multi-Developer Collaboration
+
+For teams, set the `developer` field in `pactkit.yaml` to avoid Story ID conflicts:
+
+```yaml
+developer: alice
+```
+
+Story IDs become `STORY-alice-001`, preventing merge conflicts when multiple developers work on separate branches. See [Configuration](/docs/configuration) for details.

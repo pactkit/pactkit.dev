@@ -4,58 +4,108 @@ description: Deployed files and customization
 ---
 
 <Callout type="info">
-This page covers the **pip install** deployment. If you installed via the [Claude Code Plugin](/docs/installation#option-a-claude-code-plugin-recommended), all components are deployed automatically and `pactkit.yaml` is not used.
+This page covers the **pip install** deployment. If you installed via the [Claude Code Plugin](/docs/installation#option-a-claude-code-plugin-recommended-for-claude-code), all components are deployed automatically and `pactkit.yaml` is not used.
 </Callout>
 
-## Deployed Files
+## Deployment Architecture
 
-`pactkit init` deploys the following to `~/.claude/`:
+PactKit supports two deployment formats, each targeting the AI tool's native directory structure:
 
-| Path | Contents |
-|------|----------|
-| `CLAUDE.md` | Constitution root (references 6 rule modules) |
-| `rules/01-core-protocol.md` | Core behavioral rules |
-| `rules/02-hierarchy-of-truth.md` | Spec > Tests > Code |
-| `rules/03-file-atlas.md` | File location reference |
-| `rules/04-routing-table.md` | Command routing table |
-| `rules/05-workflow-conventions.md` | Git/PR conventions |
-| `rules/06-mcp-integration.md` | MCP server integration |
-| `agents/*.md` | 9 agent definitions |
-| `commands/*.md` | 11 command playbooks |
-| `skills/*/` | 10 skills (3 scripted + 7 prompt-only) |
+### Claude Code (Classic)
 
-## pactkit.yaml Reference
+```
+~/.claude/
+├── CLAUDE.md                 ← Constitution root (@import references)
+├── rules/                    ← 7 modular rule files
+├── agents/                   ← 9 agent definitions
+├── commands/                 ← 11 command playbooks
+└── skills/                   ← 10 skills (3 scripted + 7 prompt-only)
+```
 
-The `pactkit.yaml` file controls which components are deployed and how they behave:
+### OpenCode
+
+```
+~/.config/opencode/
+├── AGENTS.md                 ← Slim header (rules loaded via instructions)
+├── rules/                    ← 7 rule files (loaded via opencode.json)
+├── agents/                   ← 9 agents (mode: subagent, record tools)
+├── commands/                 ← 11 commands (agent: build + model: routing)
+├── skills/                   ← 10 skills (SKILL.md frontmatter)
+└── opencode.json             ← Global config (instructions, provider preserved)
+```
+
+## pactkit.yaml
+
+The `pactkit.yaml` file controls which components are deployed and how they behave.
+
+**Location**: PactKit auto-detects the config file based on your environment:
+
+| Environment | Config Path |
+|-------------|-------------|
+| Claude Code | `.claude/pactkit.yaml` |
+| OpenCode | `.opencode/pactkit.yaml` |
+
+Both paths are checked automatically — no manual configuration needed.
+
+### Reference
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `stack` | string | auto-detected | Project stack (`python`, `node`, `go`, `java`) |
 | `version` | string | current | PactKit version that generated the config |
-| `root` | string | `.` | Project root directory (deployment target resolves to `~/.claude` by default) |
+| `developer` | string | `""` | Developer prefix for Story IDs (multi-developer collaboration) |
 | `agents` | list | all 9 | Agent definitions to deploy |
 | `commands` | list | all 11 | Command playbooks to deploy |
 | `skills` | list | all 10 | Skills to deploy |
-| `rules` | list | all 6 | Constitution rule modules to deploy |
-| `exclude` | object | `{}` | Components to exclude (e.g., `exclude.agents: [agent-name]`, `exclude.commands: [cmd-name]`) |
+| `rules` | list | all 7 | Constitution rule modules to deploy |
 | `ci` | object | `provider: none` | CI/CD pipeline generation (`github`, `gitlab`, `none`) |
 | `issue_tracker` | object | `provider: none` | External issue tracker (`github`, `none`) |
 | `hooks` | object | disabled | Opt-in hook templates (pre-commit, post-test, pre-push) |
 | `lint_blocking` | bool | `false` | Whether lint failures block commits in Done command |
 | `auto_fix` | bool | `false` | Whether to auto-fix lint errors before checking |
+| `agent_models` | object | `{}` | Per-agent model overrides (`haiku`, `sonnet`, `opus`, `inherit`) |
+| `command_models` | object | defaults | Per-command model overrides for OpenCode deployment |
 | `check.security_checklist` | bool | `true` | Enable 8-item structured security checklist in Check phase |
 | `done.lesson_quality_threshold` | int | `15` | Minimum quality score (0-25) for lessons to be auto-appended |
-| `agent_models` | object | `{}` | Per-agent model overrides (values: `haiku`, `sonnet`, `opus`, `inherit`) |
 | `rule_scopes` | object | `{}` | Map rule IDs to glob patterns for context-aware scoping |
 | `enterprise` | object | all `false` | Enterprise flags: `no_git`, `no_external`, `non_interactive`, `debug` |
 
 <Callout type="info">
-All conditional features (CI/CD, issue tracking, hooks, lint blocking) are **disabled by default** and only activate when explicitly configured. This respects diverse user environments.
+All conditional features (CI/CD, issue tracking, hooks, lint blocking) are **disabled by default** and only activate when explicitly configured.
 </Callout>
+
+### Multi-Developer Collaboration
+
+Set `developer` to avoid Story ID conflicts across team members:
+
+```yaml
+developer: alice
+```
+
+Story IDs become `STORY-alice-001`, `STORY-alice-002`, etc. Each developer has their own ID namespace, preventing file conflicts during merge.
+
+### Command Model Routing (OpenCode)
+
+The `command_models` section controls which model each command uses when deployed to OpenCode:
+
+```yaml
+command_models:
+  project-act: sonnet      # Implementation → Sonnet
+  project-done: sonnet     # Commit gate → Sonnet
+  project-check: sonnet    # QA audit → Sonnet
+  project-init: sonnet     # Setup → Sonnet
+  project-release: sonnet  # Release → Sonnet
+  project-pr: sonnet       # PR creation → Sonnet
+  project-hotfix: sonnet   # Hotfix → Sonnet
+```
+
+Commands not listed (e.g., `project-plan`, `project-clarify`, `project-design`) inherit the main model, so you can switch between Opus versions freely.
+
+Model shortnames (`sonnet`, `opus`, `haiku`) are automatically resolved to full `provider/model-id` format by reading your `opencode.json` provider configuration.
 
 ## Constitution Rules
 
-The 6 rule modules form the "constitution" that governs agent behavior:
+The 7 rule modules form the "constitution" that governs agent behavior:
 
 | Module | Purpose |
 |--------|---------|
@@ -65,6 +115,7 @@ The 6 rule modules form the "constitution" that governs agent behavior:
 | **Routing Table** | Maps commands to agents and playbooks |
 | **Workflow Conventions** | Conventional Commits, branch naming, PR conventions |
 | **MCP Integration** | Conditional MCP server usage by PDCA phase |
+| **Shared Protocols** | Cross-command protocols (Lazy Visualize, Test Mapping, Context.md format) |
 
 ## Language Profiles
 
@@ -77,10 +128,6 @@ PactKit auto-detects the project stack and configures the appropriate test runne
 | `go` | `go test ./...` | `golangci-lint run` | `go.mod` |
 | `java` | `mvn test` | `mvn checkstyle:check` | `pom.xml` |
 
-Valid `stack` values in `pactkit.yaml`: `python`, `node`, `go`, `java`. Detection is automatic based on manifest files found in the project.
-
-The `lint_command` is used by both Act and Done commands to run a CI lint gate before commit, catching formatting and style errors early.
-
 ## Safe Regression
 
 PactKit's safe regression system prevents agents from blindly modifying pre-existing tests:
@@ -92,16 +139,17 @@ PactKit's safe regression system prevents agents from blindly modifying pre-exis
 ## Idempotent Updates
 
 ```bash
-pactkit update
+pactkit update                    # Claude Code
+pactkit upgrade --format opencode # OpenCode
 ```
 
-Safe to re-run at any time. Re-deploys all managed files while preserving your custom rules (any files without the `01-` through `06-` prefixes in the rules directory).
+Safe to re-run at any time. Re-deploys all managed files while preserving your custom rules and user configuration.
 
 ## Preview
 
-Preview the deployment without modifying `~/.claude/`:
+Preview the deployment without modifying production directories:
 
 ```bash
 pactkit init -t /tmp/preview
-ls /tmp/preview/
+pactkit init --format opencode -t /tmp/oc-preview
 ```

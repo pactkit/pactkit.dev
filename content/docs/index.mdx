@@ -5,7 +5,7 @@ description: Quick introduction to PactKit
 
 ## What is PactKit?
 
-PactKit is an open-source, spec-driven agentic development toolkit for AI coding assistants. It compiles development workflows, role definitions, and behavioral rules into executable **constitutions** and **playbooks** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+PactKit is an open-source, spec-driven agentic development toolkit for AI coding assistants. It compiles development workflows, role definitions, and behavioral rules into executable **constitutions** and **playbooks** for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [OpenCode](https://opencode.ai).
 
 **Name origin**: Pact (契约) + Kit — *Code by Contract*.
 
@@ -18,12 +18,33 @@ The core idea: **agree on specs before writing code, then let agents execute**.
 | **9 Agents** | Specialized roles with constrained tools |
 | **11 Commands** | PDCA-centric workflow entry points |
 | **10 Skills** | Visualize, Board, Scaffold, Trace, Draw, Analyze, and more |
-| **6 Rules** | Modular constitution modules |
+| **7 Rules** | Modular constitution modules |
+
+### Supported AI Tools
+
+| Tool | Format | Command |
+|------|--------|---------|
+| **Claude Code** | Classic | `pactkit init` |
+| **OpenCode** | OpenCode | `pactkit init --format opencode` |
 
 ## Quick Start
 
-<Tabs items={['Plugin (Recommended)', 'pip']}>
-<Tab value="Plugin (Recommended)">
+<Tabs items={['Claude Code', 'OpenCode', 'Plugin']}>
+<Tab value="Claude Code">
+```bash
+pip install pactkit
+pactkit init
+```
+Requires Python 3.10+. Deploys to `~/.claude/`.
+</Tab>
+<Tab value="OpenCode">
+```bash
+pip install pactkit
+pactkit init --format opencode
+```
+Requires Python 3.10+. Deploys to `~/.config/opencode/` with OpenCode-native formats.
+</Tab>
+<Tab value="Plugin">
 ```bash
 # In Claude Code:
 /plugin marketplace add pactkit/claude-code-plugin
@@ -31,16 +52,9 @@ The core idea: **agree on specs before writing code, then let agents execute**.
 ```
 No Python required. Restart Claude Code and you're ready.
 </Tab>
-<Tab value="pip">
-```bash
-pip install pactkit
-pactkit init
-```
-Requires Python 3.10+. Supports `pactkit.yaml` for selective deployment.
-</Tab>
 </Tabs>
 
-Then start using in Claude Code:
+Then start using commands:
 
 ```bash
 /project-plan "Add user authentication"
@@ -55,4 +69,3 @@ Then start using in Claude Code:
 - [PDCA+ Workflow](/docs/workflow) — the spec-driven development lifecycle
 - [Agent Ensemble](/docs/agents) — 9 specialized agents
 - [Command Reference](/docs/commands) — 11 commands + 10 skills
-
