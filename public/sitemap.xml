@@ -2,133 +2,175 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://pactkit.dev</loc>
+    <loc>https://pactkit.dev/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs"/>
+    <loc>https://pactkit.dev/docs/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/"/>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs"/>
+    <loc>https://pactkit.dev/cn/docs/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/"/>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/installation</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/installation"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/installation"/>
+    <loc>https://pactkit.dev/docs/installation/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/installation/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/installation/"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/installation</loc>
+    <loc>https://pactkit.dev/cn/docs/installation/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/installation/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/installation/"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/examples</loc>
+    <loc>https://pactkit.dev/docs/examples/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/examples/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/examples/"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/examples</loc>
+    <loc>https://pactkit.dev/cn/docs/examples/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/examples/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/examples/"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/workflow</loc>
+    <loc>https://pactkit.dev/docs/workflow/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/workflow/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/workflow/"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/workflow</loc>
+    <loc>https://pactkit.dev/cn/docs/workflow/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/workflow/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/workflow/"/>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/agents</loc>
+    <loc>https://pactkit.dev/docs/agents/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/agents/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/agents/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/agents</loc>
+    <loc>https://pactkit.dev/cn/docs/agents/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/agents/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/agents/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/architecture</loc>
+    <loc>https://pactkit.dev/docs/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/architecture/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/architecture/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/architecture</loc>
+    <loc>https://pactkit.dev/cn/docs/architecture/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/architecture/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/architecture/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/commands</loc>
+    <loc>https://pactkit.dev/docs/commands/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/commands/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/commands/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/commands</loc>
+    <loc>https://pactkit.dev/cn/docs/commands/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/commands/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/commands/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/skills</loc>
+    <loc>https://pactkit.dev/docs/skills/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/skills/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/skills/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/skills</loc>
+    <loc>https://pactkit.dev/cn/docs/skills/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/skills/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/skills/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/configuration</loc>
+    <loc>https://pactkit.dev/docs/configuration/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/configuration/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/configuration/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/configuration</loc>
+    <loc>https://pactkit.dev/cn/docs/configuration/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/configuration/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/configuration/"/>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/mcp-integration</loc>
+    <loc>https://pactkit.dev/docs/mcp-integration/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/mcp-integration/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/mcp-integration/"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/mcp-integration</loc>
+    <loc>https://pactkit.dev/cn/docs/mcp-integration/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/mcp-integration/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/mcp-integration/"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/faq</loc>
+    <loc>https://pactkit.dev/docs/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/faq/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/faq/"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/faq</loc>
+    <loc>https://pactkit.dev/cn/docs/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/faq/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/faq/"/>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/docs/changelog</loc>
+    <loc>https://pactkit.dev/docs/changelog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/changelog/"/>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://pactkit.dev/cn/docs/changelog</loc>
+    <loc>https://pactkit.dev/cn/docs/changelog/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pactkit.dev/docs/changelog/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://pactkit.dev/cn/docs/changelog/"/>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
