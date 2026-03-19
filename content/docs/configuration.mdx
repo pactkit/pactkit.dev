@@ -16,7 +16,7 @@ PactKit supports two deployment formats, each targeting the AI tool's native dir
 ```
 ~/.claude/
 ├── CLAUDE.md                 ← Constitution root (@import references)
-├── rules/                    ← 7 modular rule files
+├── rules/                    ← 8 modular rule files
 ├── agents/                   ← 9 agent definitions
 ├── commands/                 ← 11 command playbooks
 └── skills/                   ← 10 skills (3 scripted + 7 prompt-only)
@@ -27,7 +27,7 @@ PactKit supports two deployment formats, each targeting the AI tool's native dir
 ```
 ~/.config/opencode/
 ├── AGENTS.md                 ← Slim header (rules loaded via instructions)
-├── rules/                    ← 7 rule files (loaded via opencode.json)
+├── rules/                    ← 8 rule files (3 core always-load + 6 on-demand)
 ├── agents/                   ← 9 agents (mode: subagent, record tools)
 ├── commands/                 ← 11 commands (agent: build + model: routing)
 ├── skills/                   ← 10 skills (SKILL.md frontmatter)
@@ -57,7 +57,7 @@ Both paths are checked automatically — no manual configuration needed.
 | `agents` | list | all 9 | Agent definitions to deploy |
 | `commands` | list | all 11 | Command playbooks to deploy |
 | `skills` | list | all 10 | Skills to deploy |
-| `rules` | list | all 7 | Constitution rule modules to deploy |
+| `rules` | list | all 8 | Constitution rule modules to deploy |
 | `ci` | object | `provider: none` | CI/CD pipeline generation (`github`, `gitlab`, `none`) |
 | `issue_tracker` | object | `provider: none` | External issue tracker (`github`, `none`) |
 | `hooks` | object | disabled | Opt-in hook templates (pre-commit, post-test, pre-push) |
@@ -105,17 +105,22 @@ Model shortnames (`sonnet`, `opus`, `haiku`) are automatically resolved to full 
 
 ## Constitution Rules
 
-The 7 rule modules form the "constitution" that governs agent behavior:
+The 8 rule modules form the "constitution" that governs agent behavior:
 
-| Module | Purpose |
-|--------|---------|
-| **Core Protocol** | Session Context, Visual First, Strict TDD, Language Matching |
-| **Hierarchy of Truth** | Spec > Tests > Code precedence, conflict resolution rules |
-| **File Atlas** | Standard file locations and their purposes |
-| **Routing Table** | Maps commands to agents and playbooks |
-| **Workflow Conventions** | Conventional Commits, branch naming, PR conventions |
-| **MCP Integration** | Conditional MCP server usage by PDCA phase |
-| **Shared Protocols** | Cross-command protocols (Lazy Visualize, Test Mapping, Context.md format) |
+| Module | Type | Purpose |
+|--------|------|---------|
+| **Core Protocol** | Core | Session Context, Visual First, Strict TDD, Language Matching |
+| **Hierarchy of Truth** | Core | Spec > Tests > Code precedence, conflict resolution rules |
+| **File Atlas** | On-demand | Standard file locations and their purposes |
+| **Routing Table** | On-demand | Maps commands to agents and playbooks |
+| **Workflow Conventions** | On-demand | Conventional Commits, branch naming, PR conventions |
+| **MCP Integration** | On-demand | Conditional MCP server usage by PDCA phase |
+| **Shared Protocols** | On-demand | Cross-command protocols (Lazy Visualize, Test Mapping, Context.md format) |
+| **Architecture Principles** | On-demand | SOLID/DRY patterns, architecture decision guidelines |
+
+<Callout type="info">
+**Lazy Loading (OpenCode)**: Core rules are loaded on every turn via `opencode.json` instructions. On-demand rules are referenced in `AGENTS.md` and loaded by the AI only when needed — reducing token consumption by ~62% per turn compared to loading all rules.
+</Callout>
 
 ## Language Profiles
 

@@ -1,0 +1,71 @@
+---
+title: 快速入门
+description: PactKit 快速介绍
+---
+
+## 什么是 PactKit?
+
+PactKit 是一个开源的、基于规格驱动的智能开发工具包，专为 AI 编码助手设计。它将开发工作流、角色定义和行为规则编译为可执行的**宪章**和**剧本**，适用于 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 和 [OpenCode](https://opencode.ai)。
+
+**名称由来**: Pact（契约）+ Kit — *Code by Contract*（契约式编程）。
+
+核心理念: **先就规格达成共识，再让 AI 执行代码**。
+
+## 一览
+
+| | |
+|---|---|
+| **9 个 Agent** | 具有受限工具的专业化角色 |
+| **11 个 Command** | 以 PDCA 为核心的工作流入口 |
+| **10 个 Skill** | Visualize、Board、Scaffold、Trace、Draw、Analyze 等 |
+| **8 条 Rule** | 模块化宪章规则（2 条核心 + 6 条按需加载） |
+
+### 支持的 AI 工具
+
+| 工具 | 格式 | 命令 |
+|------|--------|---------|
+| **Claude Code** | Classic | `pactkit init` |
+| **OpenCode** | OpenCode | `pactkit init --format opencode` |
+
+## 快速开始
+
+<Tabs items={['Claude Code', 'OpenCode', 'Plugin']}>
+<Tab value="Claude Code">
+```bash
+pip install pactkit
+pactkit init
+```
+需要 Python 3.10+。部署到 `~/.claude/`。
+</Tab>
+<Tab value="OpenCode">
+```bash
+pip install pactkit
+pactkit init --format opencode
+```
+需要 Python 3.10+。部署到 `~/.config/opencode/`，使用 OpenCode 原生格式。
+</Tab>
+<Tab value="Plugin">
+```bash
+# 在 Claude Code 中:
+/plugin marketplace add pactkit/claude-code-plugin
+/plugin install pactkit
+```
+无需 Python。重启 Claude Code 即可使用。
+</Tab>
+</Tabs>
+
+然后开始使用命令:
+
+```bash
+/project-plan "添加用户认证"
+/project-act STORY-001
+/project-check
+/project-done
+```
+
+## 下一步
+
+- [安装](/cn/docs/installation) — 部署模式和选项
+- [PDCA+ 工作流](/cn/docs/workflow) — 基于规格驱动的开发生命周期
+- [Agent 集成](/cn/docs/agents) — 9 个专业化 Agent
+- [命令参考](/cn/docs/commands) — 11 个命令 + 10 个技能

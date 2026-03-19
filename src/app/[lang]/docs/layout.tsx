@@ -1,15 +1,25 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { source } from '@/lib/source';
+import { i18n } from '@/lib/i18n';
 import type { ReactNode } from 'react';
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default async function Layout({
+  params,
+  children,
+}: {
+  params: Promise<{ lang: string }>;
+  children: ReactNode;
+}) {
+  const { lang } = await params;
+
   return (
     <DocsLayout
-      tree={source.getPageTree('en')}
+      tree={source.getPageTree(lang)}
       nav={{
         title: 'PactKit',
         url: '/',
       }}
+      i18n={i18n}
       themeSwitch={{ enabled: false }}
     >
       {children}

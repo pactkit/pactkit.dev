@@ -1,0 +1,114 @@
+---
+title: MCP 集成
+description: Model Context Protocol 服务器集成
+---
+
+PactKit 集成 [Model Context Protocol](https://modelcontextprotocol.io/) 服务器以扩展 Agent 能力。所有 MCP 指令都是**条件性的** — 如果服务器不可用，会被优雅地跳过。
+
+## 支持的服务器
+
+### Context7
+
+获取最新的库文档和代码示例。
+
+- **工具**: `resolve-library-id` → `get-library-docs`
+- **时机**: 使用不熟悉的库 API 进行实现时
+- **阶段**: Act
+
+### shadcn
+
+搜索、浏览和安装来自 shadcn 注册表的 UI 组件。
+
+- **工具**: `search_items_in_registries`, `view_items_in_registries`, `get_item_examples_from_registries`, `get_add_command_for_items`
+- **时机**: 项目有 `components.json` 文件（已配置 shadcn）
+- **阶段**: Design
+
+### Playwright MCP
+
+用于测试的浏览器自动化 — 快照、点击、截图、表单填写。
+
+- **工具**: `browser_navigate`, `browser_snapshot`, `browser_click`, `browser_take_screenshot`, `browser_fill_form`
+- **时机**: 运行浏览器级别的 QA 检查
+- **阶段**: Check
+
+### Chrome DevTools MCP
+
+性能追踪、控制台消息检查、网络请求分析。
+
+- **工具**: `performance_start_trace`, `list_console_messages`, `list_network_requests`, `take_snapshot`, `take_screenshot`
+- **时机**: 需要性能或运行时诊断
+- **阶段**: Check
+
+### Memory MCP
+
+跨会话上下文的持久知识图谱。
+
+- **工具**: `create_entities`, `create_relations`, `add_observations`, `search_nodes`, `read_graph`
+- **时机**: 跨会话存储或检索架构决策
+- **阶段**: Plan, Act, Done
+
+### Draw.io
+
+架构图即时预览和交互式编辑。
+
+- **工具**: `open_drawio_xml`, `open_drawio_csv`, `open_drawio_mermaid`
+- **时机**: 生成带即时预览的架构图
+- **阶段**: Plan, Design
+
+## 按 PDCA 阶段使用
+
+| 阶段 | MCP 服务器 | 用途 |
+|-------|-----------|---------|
+| **Plan** | Memory | 存储架构决策和设计理由 |
+| **Plan** | Draw.io | 架构图即时预览 |
+| **Design** | shadcn | 发现和安装 UI 组件 |
+| **Design** | Draw.io | 交互式架构图编辑 |
+| **Act** | Context7 | 验证库 API 签名 |
+| **Act** | Memory | 从之前的会话加载上下文 |
+| **Check** | Playwright | 浏览器级别的 QA 测试 |
+| **Check** | Chrome DevTools | 性能和运行时诊断 |
+| **Done** | Memory | 记录经验教训 |
+
+## 条件行为
+
+每个 MCP 集成在运行时检查工具可用性：
+
+```
+IF mcp__memory__create_entities tool is available:
+  → store design context
+ELSE:
+  → skip gracefully, continue workflow
+```
+
+PactKit 运行不需要任何 MCP 服务器。它们在存在时增强工作流，但绝不是硬性依赖。
+
+## OpenCode MCP 配置
+
+对于 OpenCode 用户，MCP 服务器在 `opencode.json` 中配置：
+
+```json
+{
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"]
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp"]
+    }
+  }
+}
+```
+
+OpenCode 支持两种 MCP 类型：
+- **Remote**: `type: "remote"` 加 `url` — 无需本地安装（如 Context7）
+- **Local**: `type: "local"` 加 `command` — 通过 npx 运行（如 Memory、Playwright）
+
+<Callout type="info">
+使用 `pactkit init --format opencode` 部署时，项目级 `opencode.json` 预配置了 Context7 作为远程 MCP。根据需要手动添加其他服务器。
+</Callout>

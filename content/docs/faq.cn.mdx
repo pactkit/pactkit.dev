@@ -1,0 +1,121 @@
+---
+title: 常见问题
+description: 关于 PactKit 的常见问题解答
+---
+
+## 通用问题
+
+### 什么是 PactKit?
+
+PactKit 是一个基于规格驱动的 AI 编码助手开发工具包。它将工作流、Agent 定义和行为规则编译为可执行的宪章和剧本，适用于 Claude Code 和 OpenCode。可以把它看作 AI 辅助开发的"操作系统"。
+
+### 我需要同时使用 Claude Code 和 OpenCode 吗?
+
+不需要。PactKit 独立支持每个工具。使用 `pactkit init` 用于 Claude Code，或 `pactkit init --format opencode` 用于 OpenCode。如果你在两个工具之间切换，也可以同时部署。
+
+### PactKit 免费吗?
+
+是的。PactKit 采用 MIT 许可证，免费使用。发布在 [PyPI](https://pypi.org/project/pactkit/) 和 [GitHub](https://github.com/pactkit/pactkit)。
+
+### PactKit 支持哪些编程语言?
+
+PactKit 在工作流层面是语言无关的。它自动检测项目技术栈（Python、Node.js、Go、Java）并通过语言配置配置相应的测试运行器和 lint 命令。PDCA 工作流适用于任何语言。
+
+---
+
+## 安装
+
+### pip install 和 Claude Code Plugin 有什么区别?
+
+| | pip install | Claude Code Plugin |
+|---|---|---|
+| **需要 Python** | 是 (3.10+) | 否 |
+| **可定制** | 通过 `pactkit.yaml` 完全控制 | 部署所有组件 |
+| **更新** | `pip install --upgrade pactkit && pactkit update` | `/plugin update pactkit` |
+| **选择性部署** | 是（可排除 Agent、命令、Skill） | 否 |
+| **OpenCode 支持** | 是（`--format opencode`） | 否（仅 Claude Code） |
+
+### 可以在 CI/CD 中使用 PactKit 吗?
+
+可以。PactKit 可通过 `pactkit.yaml` 中的 `ci.provider: github` 或 `ci.provider: gitlab` 生成 CI 工作流文件。企业标志（`--no-git`、`--no-external`、`--non-interactive`）支持隔离和 CI 环境。
+
+### 如何更新 PactKit?
+
+```bash
+# 更新包
+pip install --upgrade pactkit
+
+# 重新部署文件（安全、幂等）
+pactkit update                     # Claude Code
+pactkit upgrade --format opencode  # OpenCode
+```
+
+更新时会保留您的自定义规则和 `pactkit.yaml` 设置。
+
+---
+
+## 工作流
+
+### 如果我不想要完整的 PDCA 循环怎么办?
+
+使用 `/project-hotfix` 进行快速修复，跳过 Spec 创建和 Board 条目。要获得更多控制，可以手动运行单个阶段——不必每次变更都使用全部四个阶段。
+
+### Agent 会修改我现有的测试吗?
+
+不会。PactKit 的安全回归系统保护已有测试：
+- TDD 循环仅对当前 Story 创建的测试进行迭代
+- 已有测试失败会触发停止信号——Agent 会报告而不是修改
+- Done 门禁在提交前运行完整的回归检查
+
+### 如果 Spec 与代码冲突怎么办?
+
+**Spec 获胜。** 这就是真理层级: Spec > Tests > Code。当检测到冲突时，Agent 修改代码（或测试）以匹配 Spec，绝不反过来。
+
+---
+
+## 架构
+
+### 懒加载规则是如何工作的?
+
+PactKit v2.1.1 为 OpenCode 引入了懒加载规则以减少 token 消耗：
+
+- **核心规则**（3 个文件）通过 `opencode.json` `instructions` 在每轮加载
+- **按需规则**（6 个文件）在 `AGENTS.md` 中引用——AI 仅在当前任务需要时才读取它们
+
+这将每轮系统 prompt 开销减少了约 62%（从 7,200 到 2,800 tokens）。
+
+Claude Code 使用 `@import` 在每轮加载所有规则。懒加载是 OpenCode 特有的优化。
+
+### 可以添加自己的规则吗?
+
+可以。在 `rules/` 目录中创建文件名以 `09-` 开头的规则文件（如 `09-credential-safety.md`、`10-retrieval-routing.md`）。PactKit 管理 `01-` 到 `08-` 的文件，更新时不会覆盖您的自定义规则。
+
+---
+
+## 故障排除
+
+### 安装后 PactKit 命令没有出现
+
+1. 验证安装: `pactkit version`
+2. 重新部署: `pactkit init`（或 `pactkit init --format opencode`）
+3. 重启您的 AI 编码工具
+4. 检查部署目录是否存在（`~/.claude/` 或 `~/.config/opencode/`）
+
+### `/project-done` 时测试失败
+
+Done 命令运行完整的回归门禁。如果测试失败：
+1. Agent 会**停止并报告** — 不会提交有问题的代码
+2. 手动修复失败的测试或重新运行 `/project-act`
+3. 然后重新运行 `/project-done`
+
+### Spec lint 阻止了 `/project-act`
+
+Spec Lint Gate（阶段 0）在允许实现之前验证 Spec 结构。常见错误：
+
+| 错误 | 原因 | 修复 |
+|-------|-------|-----|
+| E001 | 缺少元数据表 | 添加包含 ID、Type、Status、Release 字段的元数据表 |
+| E004 | 缺少需求子章节 | 添加 `### R1:` 需求标题 |
+| E008 | Release 字段为 TBD | 设置版本号（或在 Done 阶段前保留 TBD） |
+
+手动检查: `pactkit spec-lint docs/specs/STORY-001.md`

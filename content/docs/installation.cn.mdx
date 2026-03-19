@@ -1,0 +1,189 @@
+---
+title: 安装
+description: 安装和部署 PactKit
+---
+
+PactKit 支持多种 AI 编程工具和安装方式。
+
+## 方案 A：Claude Code Plugin（推荐 Claude Code 用户）
+
+最简单的 Claude Code 安装方式，无需 Python。
+
+```bash
+# 在 Claude Code 中：
+/plugin marketplace add pactkit/claude-code-plugin
+/plugin install pactkit
+```
+
+重启 Claude Code，全部 9 个 Agent、11 个 Command、10 个 Skill 和 8 个 Rule 即刻可用。
+
+| | |
+|---|---|
+| **更新** | 通过 Marketplace 自动更新，或执行 `/plugin update pactkit` |
+| **卸载** | `/plugin uninstall pactkit` |
+| **隔离性** | Plugin 独立存放于自己的缓存目录，与 `~/.claude/` 分离 |
+| **团队共享** | 添加至 `.claude/settings.json`，队友将收到安装提示 |
+
+<Callout type="info">
+Plugin 会部署所有组件。如需选择性部署（例如禁用特定 Agent 或 Command），请使用 pip 安装方式并配置 `pactkit.yaml`。
+</Callout>
+
+### 团队共享
+
+将以下内容添加到项目的 `.claude/settings.json`，以便自动提示队友安装：
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "pactkit": {
+      "source": { "source": "github", "repo": "pactkit/claude-code-plugin" }
+    }
+  },
+  "enabledPlugins": {
+    "pactkit@pactkit": true
+  }
+}
+```
+
+## 方案 B：pip 安装（Claude Code）
+
+适合希望通过 `pactkit.yaml` 进行精细控制的 Claude Code 用户。
+
+### 前置要求
+
+- **Python 3.10+**
+- 已安装并配置好 **Claude Code** CLI
+
+### 安装与部署
+
+```bash
+pip install pactkit
+pactkit init
+```
+
+这将把完整工具包部署至 `~/.claude/`：
+
+| 路径 | 内容 |
+|------|----------|
+| `CLAUDE.md` | 总章根文件（通过 `@import` 引用 8 个规则模块） |
+| `rules/` | 7 个模块化规则文件 |
+| `agents/` | 9 个 Agent 定义 |
+| `commands/` | 11 个 Command 剧本 |
+| `skills/` | 10 个 Skill（3 个脚本型 + 7 个纯提示型） |
+
+### 更新与升级
+
+```bash
+pip install --upgrade pactkit
+pactkit update
+```
+
+## 方案 C：pip 安装（OpenCode）
+
+适合 [OpenCode](https://opencode.ai) 用户。
+
+### 前置要求
+
+- **Python 3.10+**
+- 已安装 **OpenCode**
+
+### 安装与部署
+
+```bash
+pip install pactkit
+pactkit init --format opencode
+```
+
+这将以 OpenCode 原生格式部署至 `~/.config/opencode/`：
+
+| 路径 | 内容 |
+|------|----------|
+| `AGENTS.md` | 精简头部（规则通过 `opencode.json` instructions 加载） |
+| `rules/` | 8 个规则文件（3 个核心规则始终加载（`instructions`）+ 6 个按需加载（`@reference`）） |
+| `agents/` | 9 个 Agent 定义（`mode: subagent`，工具以 record 格式表示） |
+| `commands/` | 11 个 Command 剧本（`agent: build` + `model:` 路由） |
+| `skills/` | 10 个 Skill（带 `SKILL.md` frontmatter 以支持自动发现） |
+| `opencode.json` | 全局配置（instructions，保留用户 `provider` 配置） |
+
+### 与 Claude Code 的关键差异
+
+| 特性 | Claude Code | OpenCode |
+|---------|-------------|----------|
+| 规则加载 | CLAUDE.md 中 `@import`（全部 8 个规则） | 懒加载分层：3 个核心规则通过 `instructions` + 6 个按需规则通过 AGENTS.md 中 `@reference` |
+| Agent 格式 | `name:`、`permissionMode:`、字符串工具 | `mode: subagent`，无 `name`，record 格式工具 |
+| Command frontmatter | `allowed-tools: [...]` | `agent: build` + `model: provider/model-id` |
+| 配置文件 | `.claude/pactkit.yaml` | `.opencode/pactkit.yaml` |
+| 模型路由 | 提示级别建议 | 配置级别强制执行（通过 `model:` frontmatter） |
+
+### 懒加载规则（OpenCode）
+
+OpenCode v2.1.1 引入了**懒加载规则**，每轮 token 消耗减少约 62%：
+
+- **核心规则**（通过 `opencode.json` `instructions` 始终加载）：`01-core-protocol`、`02-hierarchy-of-truth`、`09-credential-safety`
+- **按需规则**（通过 AGENTS.md 中 `@reference` 由 AI 按需加载）：`03-file-atlas`、`04-routing-table`、`05-workflow-conventions`、`06-mcp-integration`、`07-shared-protocols`、`08-architecture-principles`
+
+AI 仅在当前任务需要时才读取按需规则（例如，仅在提交操作时才读取 `05-workflow-conventions.md`），避免每轮不必要的 token 开销。
+
+### 模型路由
+
+OpenCode Command 会自动路由至最合适的模型：
+
+| Command | 模型 | 原因 |
+|----------|-------|--------|
+| `/project-plan`、`/project-clarify`、`/project-design` | 继承主模型 | 深度推理任务 |
+| `/project-act`、`/project-done`、`/project-check` 等 | Sonnet | 实现任务 |
+| 后台任务（标题、压缩） | Haiku（`small_model`） | 轻量级任务 |
+
+在 `pactkit.yaml` 中配置：
+
+```yaml
+command_models:
+  project-act: sonnet
+  project-done: sonnet
+  project-check: sonnet
+```
+
+### 更新与升级
+
+```bash
+pip install --upgrade pactkit
+pactkit upgrade --format opencode
+```
+
+### 其他命令
+
+```bash
+# 检查版本
+pactkit version
+
+# 预览至自定义目录
+pactkit init -t /tmp/preview
+pactkit init --format opencode -t /tmp/oc-preview
+```
+
+## 项目初始化
+
+通过任意方式安装 PactKit 后，对每个工作项目执行初始化：
+
+```bash
+/project-init
+```
+
+这将创建治理结构（`docs/specs/`、`docs/product/sprint_board.md`、`docs/architecture/graphs/` 等）以及适合当前环境的项目指令：
+
+- **Claude Code**：`.claude/CLAUDE.md`，包含架构概览、开发命令和 `@` 引用
+- **OpenCode**：`./AGENTS.md` + `opencode.json`，包含 `permission`、`mcp` 模板和 `instructions`
+
+<Callout type="info">
+**忘记初始化了？** 没关系——`/project-plan` 和 `/project-doctor` 会自动检测未初始化的项目并为你处理。
+</Callout>
+
+## 多开发者协作
+
+对于团队，在 `pactkit.yaml` 中设置 `developer` 字段以避免 Story ID 冲突：
+
+```yaml
+developer: alice
+```
+
+Story ID 将变为 `STORY-alice-001`，当多名开发者在各自分支上工作时可防止合并冲突。详见[配置](/cn/docs/configuration)。

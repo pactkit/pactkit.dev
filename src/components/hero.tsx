@@ -1,66 +1,139 @@
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-border">
-      <div className="mx-auto max-w-5xl px-6 py-24 text-center sm:py-32">
-        <Image
-          src="/logo.jpg"
-          alt="PactKit"
-          width={360}
-          height={180}
-          className="mx-auto mb-8"
-          priority
-        />
-        <p className="mb-4 text-sm font-medium tracking-widest uppercase text-muted-foreground">
-          Spec-Driven Agentic Development
-        </p>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          Code by Contract
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-          Ship features with AI agents that follow specs, not vibes.
-          <br />
-          One <code className="text-foreground/80">pip install</code> gives AI coding assistants
-          a structured operating system — specs before code, TDD by default, safe regression gates.
-          Works with Claude Code and OpenCode.
-        </p>
+    <section className="relative overflow-hidden">
+      {/* Background grid */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(1_0_0/4%)_1px,transparent_1px),linear-gradient(to_bottom,oklch(1_0_0/4%)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,oklch(0.145_0_0)_70%)]" />
 
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-muted px-4 py-2.5 font-mono text-sm">
-            <span className="text-muted-foreground">$</span>
-            <span>pip install pactkit</span>
-          </div>
-          <div className="flex gap-3">
-            <Button asChild>
-              <Link href="/docs">Documentation</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <a
-                href="https://github.com/pactkit/pactkit"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </a>
-            </Button>
-          </div>
-        </div>
+      <div className="relative mx-auto max-w-6xl px-6 pt-24 pb-16">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          {/* Left: copy */}
+          <div>
+            <p className="text-sm font-medium tracking-widest uppercase text-blue-400">
+              Spec-Driven Agentic DevOps
+            </p>
+            <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              Your AI writes specs{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                before code
+              </span>
+            </h1>
+            <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
+              PactKit gives AI coding assistants a structured operating system
+              — 9 agents collaborate through a Plan-Act-Check-Done lifecycle,
+              with TDD by default and safe regression gates. Works with Claude
+              Code and OpenCode.
+            </p>
 
-        <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-          <span>9 Agents</span>
-          <span className="text-border">|</span>
-          <span>11 Commands</span>
-          <span className="text-border">|</span>
-          <span>10 Skills</span>
-          <span className="text-border">|</span>
-          <span>Full PDCA Lifecycle</span>
-          <span className="text-border">|</span>
-          <span>MIT License</span>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-4 py-2.5 font-mono text-sm">
+                <span className="text-muted-foreground">$</span>
+                <span>pip install pactkit</span>
+              </div>
+              <div className="flex gap-3">
+                <Button asChild size="lg">
+                  <Link href="/docs">Get Started</Link>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <a
+                    href="https://github.com/pactkit/pactkit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub
+                  </a>
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
+                v2.1.1
+              </span>
+              <span>2,300+ tests</span>
+              <span>MIT License</span>
+            </div>
+          </div>
+
+          {/* Right: terminal demo */}
+          <div className="lg:pl-4">
+            <div className="overflow-hidden rounded-xl border border-border bg-[oklch(0.10_0_0)] shadow-2xl shadow-blue-500/5">
+              {/* Title bar */}
+              <div className="flex items-center gap-2 border-b border-border/50 px-4 py-2.5">
+                <div className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+                <div className="h-3 w-3 rounded-full bg-[#febc2e]" />
+                <div className="h-3 w-3 rounded-full bg-[#28c840]" />
+                <span className="ml-2 text-xs text-muted-foreground/50 font-mono">~</span>
+              </div>
+              {/* Content */}
+              <div className="p-4 font-mono text-[12.5px] leading-6 text-left">
+                <Line prompt>/project-sprint &quot;Add OAuth2 login&quot;</Line>
+                <Line />
+                <Line phase="Plan">Scanning codebase... 47 modules</Line>
+                <Line phase="Plan">Spec: docs/specs/STORY-042.md</Line>
+                <Line phase="Plan">Board: 4 tasks added</Line>
+                <Line />
+                <Line phase="Act">Tests: 8 cases written (RED)</Line>
+                <Line phase="Act">Implement: all pass (GREEN)</Line>
+                <Line phase="Act">Lint: 0 errors</Line>
+                <Line />
+                <Line phase="Check">SEC-1..SEC-8: all PASS</Line>
+                <Line phase="Check">ACs: 4/4 verified</Line>
+                <Line />
+                <Line phase="Done">Regression: 2307 tests passed</Line>
+                <Line phase="Done" highlight>feat(auth): STORY-042 add OAuth2 login</Line>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function Line({
+  prompt,
+  phase,
+  highlight,
+  children,
+}: {
+  prompt?: boolean;
+  phase?: string;
+  highlight?: boolean;
+  children?: React.ReactNode;
+}) {
+  if (!children && !prompt) return <div className="h-2" />;
+
+  const phaseColors: Record<string, string> = {
+    Plan: "text-blue-400",
+    Act: "text-green-400",
+    Check: "text-yellow-400",
+    Done: "text-purple-400",
+  };
+
+  return (
+    <div className={`flex gap-0 ${highlight ? "text-foreground/90" : ""}`}>
+      {prompt ? (
+        <>
+          <span className="text-green-400">$</span>
+          <span className="ml-2 text-foreground/90">{children}</span>
+        </>
+      ) : (
+        <>
+          {phase && (
+            <span className={`w-12 shrink-0 font-semibold ${phaseColors[phase] ?? ""}`}>
+              {phase}
+            </span>
+          )}
+          <span className={highlight ? "text-foreground/90" : "text-muted-foreground/60"}>
+            {children}
+          </span>
+        </>
+      )}
+    </div>
   );
 }

@@ -1,0 +1,239 @@
+---
+title: 示例
+description: 常用场景与逐步操作演练
+---
+
+通过实际示例学习 PactKit。每个场景都展示了从需求到交付的完整工作流。
+
+## 示例 1：添加功能（完整 PDCA）
+
+使用完整 Plan-Act-Check-Done 循环的典型功能开发。
+
+**场景**：为 FastAPI 应用添加 `/health` 端点。
+
+### 第一步：Plan
+
+```bash
+/project-plan "Add a /health endpoint that returns service status and uptime"
+```
+
+System Architect 将：
+1. 使用 `visualize` 扫描代码库
+2. 在 `docs/specs/STORY-001.md` 生成 Spec
+3. 在 Sprint Board 中添加 Story
+4. 更新 `docs/product/context.md`
+
+**输出**：类似如下的 Spec 文件：
+
+```markdown
+# STORY-001: Add Health Endpoint
+
+| Field   | Value         |
+|---------|---------------|
+| ID      | STORY-001     |
+| Type    | Feature       |
+| Status  | Plan          |
+| Release | TBD           |
+
+## Requirements
+### R1: Health endpoint returns service status
+The system MUST expose a `GET /health` endpoint that returns...
+
+## Acceptance Criteria
+### AC1: Basic health check
+- Given the service is running
+- When a GET request is made to /health
+- Then the response status is 200 with JSON body containing "status": "healthy"
+```
+
+### 第二步：Act
+
+```bash
+/project-act STORY-001
+```
+
+Senior Developer 将：
+1. **Spec Lint 关卡** — 验证 Spec 结构
+2. **一致性检查** — 将 Spec 与 Board 任务交叉核对
+3. **先写测试**（RED）— 创建 `tests/test_health.py`
+4. **实现代码**（GREEN）— 编写端点代码
+5. **验证** — 运行完整测试套件
+
+### 第三步：Check
+
+```bash
+/project-check
+```
+
+QA Engineer 将：
+1. 运行安全检查清单（SEC-1 至 SEC-8）
+2. 以 Gherkin 格式生成测试用例
+3. 执行测试并验证 Spec 对齐
+4. 给出 PASS 或 FAIL 裁定
+
+### 第四步：Done
+
+```bash
+/project-done
+```
+
+Repo Maintainer 将：
+1. 运行回归关卡（完整测试套件）
+2. 运行 Lint 关卡
+3. 归档 Story
+4. 创建规范提交：`feat(api): STORY-001 add /health endpoint`
+5. 提供创建 Pull Request 的选项
+
+---
+
+## 示例 2：快速 Hotfix
+
+对于简单修复，跳过完整 PDCA 循环。
+
+```bash
+/project-hotfix "Fix typo in README: 'recieve' → 'receive'"
+```
+
+Senior Developer 将修复问题、运行快速测试并直接提交。无需 Spec 或 Board 条目。
+
+---
+
+## 示例 3：全新产品设计
+
+从零开始构建全新产品。
+
+```bash
+/project-design "Build a bookmark manager with tagging and search"
+```
+
+Product Designer 将：
+1. 在 `docs/product/prd.md` 生成 PRD
+2. 分解为 5-10 个带优先级的 Story
+3. 为每个 Story 创建 Spec 文件
+4. 填充 Sprint Board
+5. 生成架构图
+
+然后逐一执行 Story：
+
+```bash
+/project-act STORY-001   # 框架搭建
+/project-done
+/project-act STORY-002   # 核心书签 CRUD
+/project-done
+# ... 以此类推
+```
+
+---
+
+## 示例 4：自动化 Sprint
+
+一条命令运行完整 PDCA 循环。
+
+```bash
+/project-sprint "Add user authentication with JWT tokens"
+```
+
+自动编排所有四个阶段：
+1. **Plan** — System Architect 创建 Spec
+2. **Act** — Senior Developer 使用 TDD 实现
+3. **Check** — QA Engineer 审计
+4. **Done** — Repo Maintainer 提交
+
+<Callout type="info">
+Sprint 模式需要 Opus 模型进行多 Agent 协调。对于 Sonnet 级别的模型，请手动运行每个阶段。
+</Callout>
+
+---
+
+## 示例 5：多开发者协作
+
+两名开发者在同一项目上工作而不产生冲突。
+
+**开发者 A**（`pactkit.yaml`）：
+```yaml
+developer: alice
+```
+
+**开发者 B**（`pactkit.yaml`）：
+```yaml
+developer: bob
+```
+
+Story ID 现已命名空间化：
+- Alice 创建 `STORY-alice-001`、`STORY-alice-002`
+- Bob 创建 `STORY-bob-001`、`STORY-bob-002`
+
+合并时不会产生文件冲突。每位开发者拥有独立的 Spec 和 Board 条目。
+
+---
+
+## 示例 6：直接使用 Skill
+
+Skill 可以在 PDCA 工作流之外独立调用。
+
+### 可视化代码库
+
+```bash
+# 文件级依赖图
+visualize
+
+# 类图
+visualize --mode class
+
+# 从特定函数追踪调用链
+visualize --mode call --entry handle_request
+```
+
+### Board 操作
+
+```bash
+# 手动添加 Story
+board add_story STORY-042 "Fix login timeout" "Investigate root cause|Implement fix|Add test"
+
+# 标记任务完成
+board update_task STORY-042 "Implement fix"
+
+# 归档已完成的 Story
+board archive
+```
+
+### 追踪执行流
+
+```bash
+/pactkit-trace "How does the authentication middleware work?"
+```
+
+### 生成架构图
+
+```bash
+/pactkit-draw "System architecture showing API, DB, and cache layers"
+```
+
+---
+
+## 示例 7：OpenCode 模型路由
+
+使用 OpenCode 时，Command 会自动路由至最适合每个任务的模型。
+
+```bash
+# 使用主模型（Opus）—— 深度推理
+/project-plan "Redesign the caching layer for horizontal scaling"
+
+# 使用 Sonnet —— 实现
+/project-act STORY-003
+
+# 使用 Sonnet —— QA 审计
+/project-check
+
+# 使用 Sonnet —— 提交与清理
+/project-done
+```
+
+在 `.opencode/pactkit.yaml` 中自定义路由：
+
+```yaml
+command_models:
+  project-act: sonnet
+  project-plan: opus    # 覆盖：强制使用 Opus 进行规划
+  project-check: haiku  # 覆盖：使用 Haiku 进行快速检查
+```

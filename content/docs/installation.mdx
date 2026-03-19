@@ -15,7 +15,7 @@ The simplest way to install for Claude Code users. No Python required.
 /plugin install pactkit
 ```
 
-Restart Claude Code. All 9 agents, 11 commands, and 10 skills are immediately available.
+Restart Claude Code. All 9 agents, 11 commands, 10 skills, and 8 rules are immediately available.
 
 | | |
 |---|---|
@@ -65,7 +65,7 @@ This deploys the complete toolkit to `~/.claude/`:
 
 | Path | Contents |
 |------|----------|
-| `CLAUDE.md` | Constitution root (references 7 rule modules via `@import`) |
+| `CLAUDE.md` | Constitution root (references 8 rule modules via `@import`) |
 | `rules/` | 7 modular rule files |
 | `agents/` | 9 agent definitions |
 | `commands/` | 11 command playbooks |
@@ -99,7 +99,7 @@ This deploys to `~/.config/opencode/` with OpenCode-native formats:
 | Path | Contents |
 |------|----------|
 | `AGENTS.md` | Slim header (rules loaded via `opencode.json` instructions) |
-| `rules/` | 7 modular rule files (loaded via `instructions: ["rules/*.md"]`) |
+| `rules/` | 8 rule files (3 core always-load via `instructions` + 6 on-demand via `@reference`) |
 | `agents/` | 9 agent definitions (`mode: subagent`, tools as record format) |
 | `commands/` | 11 command playbooks (`agent: build` + `model:` routing) |
 | `skills/` | 10 skills (with `SKILL.md` frontmatter for auto-discovery) |
@@ -109,11 +109,20 @@ This deploys to `~/.config/opencode/` with OpenCode-native formats:
 
 | Feature | Claude Code | OpenCode |
 |---------|-------------|----------|
-| Rules loading | `@import` in CLAUDE.md | `instructions: ["rules/*.md"]` in opencode.json |
+| Rules loading | `@import` in CLAUDE.md (all 8 rules) | Lazy split: 3 core in `instructions` + 6 on-demand via `@reference` in AGENTS.md |
 | Agent format | `name:`, `permissionMode:`, string tools | `mode: subagent`, no `name`, record tools |
 | Command frontmatter | `allowed-tools: [...]` | `agent: build` + `model: provider/model-id` |
 | Config file | `.claude/pactkit.yaml` | `.opencode/pactkit.yaml` |
 | Model routing | Prompt-level suggestion | Config-level enforcement via `model:` frontmatter |
+
+### Lazy Rule Loading (OpenCode)
+
+OpenCode v2.1.1 introduced **lazy rule loading** to reduce token consumption by ~62% per turn:
+
+- **Core rules** (always loaded via `opencode.json` `instructions`): `01-core-protocol`, `02-hierarchy-of-truth`, `09-credential-safety`
+- **On-demand rules** (loaded by AI when needed via `@reference` in AGENTS.md): `03-file-atlas`, `04-routing-table`, `05-workflow-conventions`, `06-mcp-integration`, `07-shared-protocols`, `08-architecture-principles`
+
+The AI reads on-demand rules only when the current task requires them (e.g., reading `05-workflow-conventions.md` only during commit operations), avoiding unnecessary token overhead on every turn.
 
 ### Model Routing
 

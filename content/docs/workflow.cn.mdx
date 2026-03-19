@@ -1,0 +1,124 @@
+---
+title: PDCA+ 工作流
+description: Plan-Do-Check-Act 生命周期
+---
+
+PactKit 的核心方法论是 **PDCA 循环** —— Plan、Act、Check、Done —— 每个阶段都设有质量关卡。
+
+## 真理层级
+
+在理解工作流之前，你必须先理解治理模型：
+
+| 层级 | 来源 | 角色 |
+|------|--------|------|
+| **第 1 层** | Spec（`docs/specs/*.md`）和测试用例 | **法律** |
+| **第 2 层** | 测试 | 法律的验证 |
+| **第 3 层** | 实现代码 | 可变的现实 |
+
+**冲突解决**：当 Spec 与代码冲突时，**Spec 优先** —— 修改代码。当 Spec 与测试冲突时，**Spec 优先** —— 修改测试。代码永远不是真理的来源。
+
+## 四个阶段
+
+### 1. Plan（`/project-plan`）
+
+**Agent**：System Architect
+
+架构师分析需求并产出 Spec：
+
+0. **初始化守卫** —— 自动检查项目是否已初始化；如有必要则运行 `/project-init`。同时验证 `pactkit.yaml`（位于 `.claude/` 或 `.opencode/`）的完整性并回填缺失部分。
+1. **澄清关卡** —— 自动检测模糊需求（缺少定量指标、边界不清、范围含糊）。生成结构化问题并收集用户回答后再继续。全新项目强制触发澄清。
+2. **可视化扫描** —— 运行 `visualize` 了解当前代码库结构
+3. **逻辑追踪** —— 如修改现有逻辑，使用 `pactkit-trace` Skill
+4. **设计** —— 更新高层设计图
+5. **Spec** —— 创建 `docs/specs/{ID}.md`，包含 RFC 2119 需求和 Given/When/Then 验收标准。**Spec Lint 自检**在移交前验证结构完整性。
+6. **Board** —— 在 Sprint Board 中添加 Story
+7. **上下文** —— 更新 `docs/product/context.md` 以实现跨会话感知
+
+### 2. Act（`/project-act`）
+
+**Agent**：Senior Developer
+
+开发者严格按照 Spec 使用 TDD 实现代码：
+
+1. **读取 Spec** —— 理解需求
+2. **Spec Lint 关卡** —— Spec 的非 AI 结构验证（元数据、必需章节、Given/When/Then）。遇错误则阻塞；有警告则继续。
+3. **一致性检查** —— 将 Spec 需求与 Board 任务和 AC 与测试用例场景交叉核对。仅供参考（永不阻塞）。
+4. **先写测试** —— 编写单元测试（RED）
+5. **实现** —— 编写代码使测试通过（GREEN），最多迭代 5 次
+6. **Lint 检查** —— 若存在 CI 配置则运行 Linter（如 Python 的 `ruff check`）
+7. **验证** —— 确保完整测试套件通过
+
+<Callout type="info">
+**环境跳出**：如果测试因环境错误（缺少包、连接被拒绝）而失败，开发者会区分项目内部模块（继续编码）和第三方依赖（停止并报告）。这可防止正常开发中的误停。
+</Callout>
+
+### 3. Check（`/project-check`）
+
+**Agent**：QA Engineer
+
+QA Engineer 运行 6 阶段深度审计：
+
+1. 安全扫描（OWASP 基线）
+2. 测试用例生成（Gherkin 场景）
+3. 层级决策（API 级别或浏览器级别测试）
+4. 测试执行
+5. Spec 对齐验证
+6. PASS / FAIL 裁定（包含测试质量关卡，用于检测重言式或过度模拟的测试）
+
+### 4. Done（`/project-done`）
+
+**Agent**：Repo Maintainer
+
+维护者完成最终交付：
+
+1. **清理** —— 删除临时文件
+2. **回归关卡** —— 运行完整测试套件；如有失败则停止
+3. **Lint 关卡** —— 运行 Linter，可配置阻塞行为
+4. **架构维护** —— 验证 `system_design.mmd` 组件数量，刷新 `rules.md` 测试不变量
+5. **卫生检查** —— 确认所有 Board 任务已勾选，向 `lessons.md` 追加经验教训
+6. **归档** —— 将已完成的 Story 移至归档
+7. **Issue 关闭** —— 关闭关联的 GitHub Issue（若 `issue_tracker.provider: github`）
+8. **部署验证** —— 若存在部署器，运行并对产物进行冒烟测试
+9. **发布**（条件性）—— 版本更新、快照、快照验证
+10. **提交** —— 规范提交（`feat(scope): description`）
+11. **Auto-PR** —— 从 Spec、Board 和测试结果生成结构化 PR 正文，包含摘要、变更内容、验收标准检查清单和测试结果。创建前需用户确认。
+12. **上下文** —— 更新 `docs/product/context.md` 供下次会话使用
+
+## 会话上下文
+
+PactKit 维护 `docs/product/context.md` —— 一个自动生成的文件，使下次会话能即时了解项目状态。包括：
+
+- Sprint 状态（进行中、待办、已完成数量）
+- 近期完成项（最近 3 个 Story）
+- 活跃分支
+- 关键决策（`lessons.md` 中最近 5 条经验）
+- 建议的下一步操作
+
+此文件由 `/project-plan` 和 `/project-done` 更新，并通过核心协议规则在每次新会话开始时读取。
+
+## Sprint 自动化
+
+一条命令运行完整 PDCA 循环：
+
+```bash
+/project-sprint "Add user authentication"
+```
+
+使用多 Agent 团队自动编排所有四个阶段。需要 Opus 模型进行 Agent 协调。
+
+## 文件结构
+
+| 路径 | 用途 |
+|------|---------|
+| `docs/specs/{ID}.md` | 需求规格说明书（法律） |
+| `docs/test_cases/{ID}_case.md` | Gherkin 验收场景 |
+| `docs/product/sprint_board.md` | Sprint Board |
+| `docs/product/context.md` | 自动生成的会话上下文 |
+| `docs/product/prd.md` | 产品需求文档 |
+| `docs/architecture/graphs/*.mmd` | Mermaid 架构图 |
+| `docs/architecture/governance/rules.md` | 架构决策和不变量 |
+| `docs/architecture/governance/lessons.md` | 经验教训（由 Done 自动追加） |
+| `docs/architecture/snapshots/` | 版本化架构图快照 |
+| `tests/unit/` | 单元测试 |
+| `tests/e2e/` | E2E 集成测试 |
+| `docs/product/archive/` | 已归档的 Story |

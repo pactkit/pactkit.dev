@@ -1,0 +1,148 @@
+---
+title: FAQ
+description: Frequently asked questions about PactKit
+---
+
+## General
+
+### What is PactKit?
+
+PactKit is a spec-driven development toolkit for AI coding assistants. It compiles workflows, agent definitions, and behavioral rules into executable constitutions and playbooks for Claude Code and OpenCode. Think of it as an "operating system" for AI-assisted development.
+
+### Do I need to use both Claude Code and OpenCode?
+
+No. PactKit supports each tool independently. Use `pactkit init` for Claude Code or `pactkit init --format opencode` for OpenCode. You can also deploy to both if you switch between tools.
+
+### Is PactKit free?
+
+Yes. PactKit is MIT-licensed and free to use. It's published on [PyPI](https://pypi.org/project/pactkit/) and [GitHub](https://github.com/pactkit/pactkit).
+
+### What languages does PactKit support?
+
+PactKit is language-agnostic at the workflow level. It auto-detects your project stack (Python, Node.js, Go, Java) and configures the appropriate test runner and lint command via Language Profiles. The PDCA workflow works with any language.
+
+---
+
+## Installation
+
+### What's the difference between pip install and the Claude Code plugin?
+
+| | pip install | Claude Code Plugin |
+|---|---|---|
+| **Requires Python** | Yes (3.10+) | No |
+| **Customizable** | Full control via `pactkit.yaml` | All components deployed |
+| **Update** | `pip install --upgrade pactkit && pactkit update` | `/plugin update pactkit` |
+| **Selective deploy** | Yes (exclude agents, commands, skills) | No |
+| **OpenCode support** | Yes (`--format opencode`) | No (Claude Code only) |
+
+### Can I use PactKit in CI/CD?
+
+Yes. PactKit can generate CI workflow files with `ci.provider: github` or `ci.provider: gitlab` in `pactkit.yaml`. Enterprise flags (`--no-git`, `--no-external`, `--non-interactive`) support air-gapped and CI environments.
+
+### How do I update PactKit?
+
+```bash
+# Update the package
+pip install --upgrade pactkit
+
+# Re-deploy files (safe, idempotent)
+pactkit update                     # Claude Code
+pactkit upgrade --format opencode  # OpenCode
+```
+
+Your custom rules and `pactkit.yaml` settings are preserved during updates.
+
+---
+
+## Workflow
+
+### What if I don't want the full PDCA cycle?
+
+Use `/project-hotfix` for quick fixes that skip Spec creation and Board entry. For more control, run individual phases manually — you don't have to use all four phases for every change.
+
+### Can agents modify my existing tests?
+
+No. PactKit's safe regression system protects pre-existing tests:
+- The TDD loop only iterates on tests created in the current story
+- Pre-existing test failures trigger a STOP signal — the agent reports instead of modifying
+- The Done gate runs a full regression check before committing
+
+### What happens if a Spec conflicts with the code?
+
+**Spec wins.** This is the Hierarchy of Truth: Spec > Tests > Code. When a conflict is detected, the agent modifies the code (or tests) to match the Spec, never the other way around.
+
+### Can I use PactKit without specs?
+
+Technically yes — `/project-hotfix` bypasses Spec creation. But for any non-trivial work, Specs are strongly recommended. They give agents clear instructions and create an audit trail of design decisions.
+
+---
+
+## Architecture
+
+### How does lazy rule loading work?
+
+PactKit v2.1.1 introduced lazy rule loading for OpenCode to reduce token consumption:
+
+- **Core rules** (3 files) are loaded every turn via `opencode.json` `instructions`
+- **On-demand rules** (6 files) are referenced in `AGENTS.md` — the AI reads them only when the current task requires them
+
+This reduces per-turn system prompt overhead by ~62% (from 7,200 to 2,800 tokens).
+
+Claude Code uses `@import` which loads all rules every turn. Lazy loading is an OpenCode-specific optimization.
+
+### Can I add my own rules?
+
+Yes. Create rule files in the `rules/` directory with filenames starting from `09-` onwards (e.g., `09-credential-safety.md`, `10-retrieval-routing.md`). PactKit manages files `01-` through `08-` and will not overwrite your custom rules during updates.
+
+### How does model routing work in OpenCode?
+
+Each command has a `model:` field in its frontmatter that maps to a model shortname (`sonnet`, `opus`, `haiku`). PactKit resolves these shortnames to full `provider/model-id` strings by reading your `opencode.json` provider configuration.
+
+Configure overrides in `pactkit.yaml`:
+
+```yaml
+command_models:
+  project-act: sonnet
+  project-plan: opus
+```
+
+---
+
+## Troubleshooting
+
+### PactKit commands don't appear after installation
+
+1. Verify installation: `pactkit version`
+2. Re-deploy: `pactkit init` (or `pactkit init --format opencode`)
+3. Restart your AI coding tool
+4. Check that the deployment directory exists (`~/.claude/` or `~/.config/opencode/`)
+
+### Tests fail during `/project-done`
+
+The Done command runs a full regression gate. If tests fail:
+1. The agent will **stop and report** — it won't commit broken code
+2. Fix the failing tests manually or run `/project-act` again
+3. Then re-run `/project-done`
+
+### `/project-init` hangs
+
+This was fixed in v1.6.6 (BUG-029). Update to the latest version:
+
+```bash
+pip install --upgrade pactkit
+pactkit update
+```
+
+If the issue persists, use `--non-interactive` flag for CI environments.
+
+### Spec lint blocks `/project-act`
+
+The Spec Lint Gate (Phase 0) validates your Spec structure before allowing implementation. Common errors:
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| E001 | Missing metadata table | Add metadata table with ID, Type, Status, Release fields |
+| E004 | Missing requirement subsections | Add `### R1:` requirement headings |
+| E008 | TBD in Release field | Set a version number (or leave TBD until Done phase) |
+
+Run `pactkit spec-lint docs/specs/STORY-001.md` to check manually.

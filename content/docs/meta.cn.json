@@ -1,20 +1,20 @@
 {
-  "title": "Documentation",
+  "title": "文档",
   "pages": [
-    "---Getting Started---",
+    "---快速开始---",
     "index",
     "installation",
     "examples",
-    "---Concepts---",
+    "---核心概念---",
     "workflow",
     "agents",
     "architecture",
-    "---Reference---",
+    "---参考手册---",
     "commands",
     "skills",
     "configuration",
     "mcp-integration",
-    "---Resources---",
+    "---资源---",
     "faq",
     "changelog"
   ]

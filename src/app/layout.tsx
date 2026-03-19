@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "PactKit — Code by Contract",
     description:
-      "Spec-driven agentic Development toolkit for AI coding assistants. 9 agents, 13 commands, full PDCA lifecycle.",
+      "Spec-driven agentic Development toolkit for AI coding assistants. 9 agents, 11 commands, 10 skills, full PDCA lifecycle.",
     url: "https://pactkit.dev",
     siteName: "PactKit",
     type: "website",

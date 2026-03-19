@@ -1,0 +1,117 @@
+---
+title: 配置
+description: 部署文件和自定义选项
+---
+
+<Callout type="info">
+本页面涵盖 **pip install** 部署方式。如果您通过 [Claude Code Plugin](/cn/docs/installation#option-a-claude-code-plugin-recommended-for-claude-code) 安装，所有组件会自动部署，不使用 `pactkit.yaml`。
+</Callout>
+
+## 部署架构
+
+PactKit 支持两种部署格式，分别对应 AI 工具的原生目录结构：
+
+### Claude Code (Classic)
+
+```
+~/.claude/
+├── CLAUDE.md                 ← 宪章根文件（通过 @import 引用 8 个规则模块）
+├── rules/                    ← 8 个模块化规则文件
+├── agents/                   ← 9 个 Agent 定义
+├── commands/                 ← 11 个命令剧本
+└── skills/                   ← 10 个 Skill（3 脚本类 + 7 纯 Prompt）
+```
+
+### OpenCode
+
+```
+~/.config/opencode/
+├── AGENTS.md                 ← 精简头部（规则通过 instructions 加载）
+├── rules/                    ← 8 个规则文件（3 核心始终加载 + 6 按需加载）
+├── agents/                   ← 9 个 Agent（mode: subagent，record 工具格式）
+├── commands/                 ← 11 个命令（agent: build + model: 路由）
+├── skills/                   ← 10 个 Skill（SKILL.md frontmatter）
+└── opencode.json             ← 全局配置（instructions，保留用户 provider 配置）
+```
+
+## pactkit.yaml
+
+`pactkit.yaml` 文件控制部署哪些组件以及它们的行为方式。
+
+**位置**: PactKit 根据环境自动检测配置文件：
+
+| 环境 | 配置路径 |
+|-------------|-------------|
+| Claude Code | `.claude/pactkit.yaml` |
+| OpenCode | `.opencode/pactkit.yaml` |
+
+两个路径都会自动检查——无需手动配置。
+
+### 参考
+
+| 字段 | 类型 | 默认值 | 描述 |
+|-------|------|---------|-------------|
+| `stack` | string | 自动检测 | 项目技术栈（`python`, `node`, `go`, `java`） |
+| `version` | string | 当前版本 | 生成配置的 PactKit 版本 |
+| `developer` | string | `""` | Story ID 的开发者前缀（多开发者协作） |
+| `agents` | list | 全部 9 个 | 要部署的 Agent 定义 |
+| `commands` | list | 全部 11 个 | 要部署的命令剧本 |
+| `skills` | list | 全部 10 个 | 要部署的 Skill |
+| `rules` | list | 全部 8 个 | 要部署的宪章规则模块 |
+| `ci` | object | `provider: none` | CI/CD 流水线生成（`github`, `gitlab`, `none`） |
+| `issue_tracker` | object | `provider: none` | 外部问题追踪（`github`, `none`） |
+| `hooks` | object | 禁用 | 可选 hook 模板（pre-commit, post-test, pre-push） |
+| `lint_blocking` | bool | `false` | lint 失败是否阻止 Done 命令中的提交 |
+| `auto_fix` | bool | `false` | 是否在检查前自动修复 lint 错误 |
+| `command_models` | object | 默认值 | OpenCode 部署的每命令模型覆盖 |
+
+<Callout type="info">
+所有条件功能（CI/CD、问题追踪、hooks、lint 阻塞）**默认关闭**，只有在明确配置后才会激活。
+</Callout>
+
+## 宪章规则
+
+8 个规则模块构成治理 Agent 行为的"宪章"：
+
+| 模块 | 类型 | 用途 |
+|--------|------|---------|
+| **Core Protocol** | 核心 | 会话上下文、视觉优先、严格 TDD、语言匹配 |
+| **Hierarchy of Truth** | 核心 | Spec > Tests > Code 优先级，冲突解决规则 |
+| **File Atlas** | 按需 | 标准文件位置及其用途 |
+| **Routing Table** | 按需 | 命令到 Agent 和剧本的映射 |
+| **Workflow Conventions** | 按需 | Conventional Commits、分支命名、PR 规范 |
+| **MCP Integration** | 按需 | 按 PDCA 阶段的条件 MCP 服务器使用 |
+| **Shared Protocols** | 按需 | 跨命令协议（Lazy Visualize、Test Mapping、Context.md 格式） |
+| **Architecture Principles** | 按需 | SOLID/DRY 模式、架构决策指南 |
+
+<Callout type="info">
+**懒加载（OpenCode）**: 核心规则通过 `opencode.json` instructions 在每轮加载。按需规则在 `AGENTS.md` 中引用，AI 仅在需要时加载——与加载所有规则相比，每轮 token 消耗减少约 62%。
+</Callout>
+
+## 语言配置
+
+PactKit 自动检测项目技术栈并配置相应的测试运行器和 lint 命令：
+
+| 技术栈 | 测试运行器 | Lint 命令 | 包文件 |
+|-------|------------|-------------|-------------|
+| `python` | `pytest tests/` | `ruff check src/ tests/` | `pyproject.toml` |
+| `node` | `npx jest` | `npx eslint .` | `package.json` |
+| `go` | `go test ./...` | `golangci-lint run` | `go.mod` |
+| `java` | `mvn test` | `mvn checkstyle:check` | `pom.xml` |
+
+## 安全回归
+
+PactKit 的安全回归系统防止 Agent 盲目修改已有测试：
+
+- **TDD 循环** — 仅对当前 Story 创建的测试进行迭代
+- **回归检查** — 只读门禁；已有测试失败 = 停止并报告
+- **Done 门禁** — 默认完整回归；仅当满足所有安全条件时使用增量模式
+
+## 幂等更新
+
+```bash
+pactkit update                    # Claude Code
+pactkit upgrade --format opencode # OpenCode
+```
+
+可随时安全重新运行。重新部署所有托管文件，同时保留您的自定义规则和用户配置。

@@ -1,0 +1,120 @@
+---
+title: Agent 集成
+description: 9 个具有受限角色的专业化 Agent
+---
+
+PactKit 部署 9 个专业化 Agent，每个 Agent 拥有**受限工具**和**聚焦职责**。没有任何单一 Agent 能做所有事情——这强制实现了职责分离。
+
+## Agent 概览
+
+| Agent | 角色 | 工具 |
+|-------|------|------|
+| System Architect | Plan 阶段，Spec，架构设计 | Read, Write, Edit, Bash, Glob |
+| Senior Developer | Act 阶段，TDD 实现 | Read, Write, Edit, Bash, Glob, Grep |
+| QA Engineer | Check 阶段，测试用例 | Read, Bash, Grep |
+| Security Auditor | OWASP 扫描 | Read, Bash, Grep（只读） |
+| Repo Maintainer | Done 阶段，提交，发布 | Read, Write, Edit, Bash, Glob |
+| System Medic | 诊断，健康检查 | Read, Bash, Glob |
+| Visual Architect | Draw.io 图表生成 | Read, Write |
+| Code Explorer | 调用图追踪 | Read, Bash, Grep, Glob |
+| Product Designer | PRD，Story 分解 | Read, Write, Edit, Bash, Glob, Grep |
+
+## OpenCode Agent 格式
+
+当部署到 OpenCode（`pactkit init --format opencode`）时，Agent 文件会转换为 OpenCode 原生格式：
+
+| 特性 | Claude Code | OpenCode |
+|---------|-------------|----------|
+| 标识 | frontmatter 中的 `name:` | 文件名（如 `system-architect.md`） |
+| 模式 | 无 | `mode: subagent` |
+| 工具 | 字符串（`"Read, Write, Edit"`） | 记录格式（`{ read: true, write: true, edit: true }`） |
+| 模型 | `model: inherit` | 省略（默认继承），或在 `opencode.json` 中设置 |
+| Claude 专有字段 | `permissionMode`, `memory`, `skills` | 已移除 |
+
+OpenCode 中的模型路由通过 `opencode.json` 配置：
+
+```json
+{
+  "agent": {
+    "system-architect": { "model": "provider/claude-opus-4.6" },
+    "senior-developer": { "model": "provider/claude-sonnet-4.6" },
+    "code-explorer": { "model": "provider/claude-haiku-4.5" }
+  }
+}
+```
+
+## 详细角色
+
+### System Architect
+
+负责 **Plan** 阶段。分析需求，维护意图图谱，生成 Spec。
+
+- **输出**: Spec（`docs/specs/`）、Sprint Board 条目、架构图
+- **不可以**: 编写实现代码、运行测试、执行 git commit
+- **协议**: 可视化扫描 → 逻辑追踪 → 设计 → Spec → Board 条目
+
+### Senior Developer
+
+负责 **Act** 阶段。严格按照 Spec 使用 TDD 实现代码。
+
+- **输出**: 通过所有测试的实现代码
+- **不可以**: 修改 Spec、修改 Test Case、执行 git commit
+- **协议**: 阅读 Spec → 编写测试（RED）→ 实现（GREEN）→ 验证完整测试套件
+
+### QA Engineer
+
+负责 **Check** 阶段和 `docs/test_cases/` 目录。
+
+- **输出**: Gherkin 测试用例、PASS/FAIL 裁决、问题清单
+- **不可以**: 修改源代码、修改 Spec
+- **协议**: 安全扫描 → 测试用例生成 → 执行 → 裁决
+- **以 plan 模式运行** — 执行操作前必须获得批准
+
+### Security Auditor
+
+执行基于 OWASP 的安全审计。**没有写入权限** — 只能读取和报告。
+
+- **关注**: 注入攻击、认证破坏、敏感数据暴露、XSS、访问控制、配置错误、SSRF
+- **输出**: 按严重度排序的安全审计报告（Critical → Low）
+- **不可以**: 修改任何代码文件
+
+### Repo Maintainer
+
+负责 **Done** 阶段。保持代码库整洁，维护架构文档，管理发布。
+
+- **输出**: 干净的工作目录、conventional commit、归档记录、最新的架构文档
+- **不可以**: 编写功能代码、force push main 分支
+- **协议**: 清理 → 回归门禁 → Lint 门禁 → 架构检查 → 卫生检查 → 归档 → 提交
+
+### System Medic
+
+诊断项目健康状况并修复损坏的配置。
+
+- **输出**: 健康检查报告表（配置、图表、Spec-Board 关联、测试）
+- **不可以**: 修改业务代码
+- **协议**: 验证配置 → 检查图表 → 验证数据 → 测试套件检查
+
+### Visual Architect
+
+使用 Draw.io XML 格式生成系统架构图。
+
+- **输出**: `.drawio` 文件（架构图、数据流图、部署图）
+- **不可以**: 修改源代码或配置
+- **最大轮次**: 30（聚焦任务）
+
+### Code Explorer
+
+通过静态分析追踪执行路径 — 从不运行代码。
+
+- **座右铭**: "少读多懂"
+- **输出**: Mermaid 序列图、考古学家报告
+- **不可以**: 修改任何文件
+- **最大轮次**: 50（深度分析），拥有持久记忆
+
+### Product Designer
+
+将产品愿景转化为 PRD 和分解后的 Story。
+
+- **输出**: PRD（`docs/product/prd.md`）、Spec、Sprint Board
+- **不可以**: 编写实现代码、捏造市场数据
+- **协议**: 解析愿景 → 生成 PRD → 分解为 Spec → Board 设置

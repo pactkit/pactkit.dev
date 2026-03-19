@@ -1,0 +1,147 @@
+---
+title: 命令参考
+description: 覆盖完整 PDCA 生命周期的 11 个命令
+---
+
+## 概览
+
+PactKit 提供 11 个命令作为工作流入口。六个原有的实用命令（trace、draw、doctor、status、review、release）现在是 [Skill](/cn/docs/skills) — 嵌入到 PDCA 命令中并在合适的时机自动调用。
+
+| 命令 | Agent | 描述 |
+|---------|-------|-------------|
+| `/project-init` | System Architect | 初始化项目脚手架和治理结构 |
+| `/project-clarify` | System Architect | 发现歧义并生成澄清简报 |
+| `/project-plan` | System Architect | 澄清门禁 → 分析需求 → 创建 Spec 和 Story |
+| `/project-act` | Senior Developer | Spec lint → 一致性检查 → TDD 实现 |
+| `/project-check` | QA Engineer | 8 项安全检查清单 + 质量审计 |
+| `/project-done` | Repo Maintainer | 回归门禁 → Auto-PR → 归档 → 提交 |
+| `/project-sprint` | Team Lead | 自动化 PDCA 编排 |
+| `/project-hotfix` | Senior Developer | 跳过 PDCA 的快速修复 |
+| `/project-design` | Product Designer | PRD 生成、Story 分解 |
+| `/project-release` | Repo Maintainer | 版本发布: snapshot、归档和 Git tag |
+| `/project-pr` | Repo Maintainer | 推送分支并通过 gh CLI 创建 Pull Request |
+
+## PDCA 核心命令
+
+### `/project-clarify`
+
+在规划前发现歧义。可独立使用或由 Plan 自动调用。
+
+```
+/project-clarify "添加用户认证"
+```
+
+执行: 歧义检测 → 结构化问题（范围、用户、约束、规模、边界情况、非目标）→ 输出澄清简报。简报可直接输入 `/project-plan`。
+
+### `/project-plan`
+
+分析需求并生成 Spec。
+
+```
+/project-plan "添加 OAuth2 用户认证"
+```
+
+执行: **Init Guard** → **Clarify Gate**（自动检测歧义输入，生成问题）→ 可视化扫描 → 逻辑追踪（通过 `pactkit-trace` Skill）→ 设计更新 → Spec 创建（含 **Spec Lint 自检**）→ Board 条目。
+
+<Callout type="info">
+**Init Guard**: 在继续之前，此命令会自动检查 `pactkit.yaml`（在 `.claude/` 或 `.opencode/` 中）、`docs/product/sprint_board.md` 和 `docs/architecture/graphs/`。如果缺少任何一项，会先运行 `/project-init` — 所以你永远不需要担心忘记初始化。
+</Callout>
+
+### `/project-act`
+
+按照 Spec 使用严格的 TDD 实现代码。
+
+```
+/project-act STORY-001
+```
+
+执行: 阅读 Spec → **Spec Lint Gate**（结构验证——有错误则阻止）→ **一致性检查**（Spec ↔ Board ↔ Test Case 对齐，仅建议性）→ 检测技术栈 → 编写测试（RED）→ 实现（GREEN）→ lint 检查 → 验证套件。
+
+### `/project-check`
+
+运行全面的 QA 审计，包含结构化安全检查清单。
+
+```
+/project-check
+```
+
+执行: **8 项安全检查清单**（SEC-1 到 SEC-8，PASS/FAIL/N/A）→ 代码质量扫描 → 测试用例生成 → 层级决策 → 执行 → Spec 对齐 → 裁决。SEC-1 到 SEC-5 失败被归类为 P0 Critical。包含 `pactkit-review` Skill 用于 PR 代码审查场景。
+
+### `/project-done`
+
+完成交付，包含回归门禁和 conventional commit。
+
+```
+/project-done
+```
+
+执行: 清理 → 回归门禁 → lint 门禁 → HLD 一致性检查 → rules.md 不变量刷新 → Board 卫生检查 → 归档 → snapshot 验证 → 提交 → **Auto-PR**（从 Spec + 测试结果生成结构化 PR body，需用户确认）。包含 `pactkit-release` Skill 用于版本发布场景。
+
+## 自动化
+
+### `/project-sprint`
+
+一个命令运行完整的 PDCA 循环。
+
+```
+/project-sprint "添加用户认证"
+```
+
+使用多 Agent 团队自动编排 Plan → Act → Check → Done。需要 Opus 模型。
+
+### `/project-hotfix`
+
+跳过完整 PDCA 循环的快速修复。
+
+```
+/project-hotfix "修复 README 中的拼写错误"
+```
+
+跳过 TDD 和 Spec 创建。适合拼写错误、配置变更和小修复。
+
+## 生命周期
+
+### `/project-design`
+
+用于新项目的产品设计。
+
+```
+/project-design "构建一个任务管理应用"
+```
+
+生成 PRD，分解为 Spec，填充 Sprint Board。使用 `pactkit-draw` Skill 生成架构图。
+
+### `/project-init`
+
+初始化项目脚手架和治理结构。
+
+```
+/project-init
+```
+
+### `/project-release`
+
+版本发布工作流: snapshot、归档和 Git tag。
+
+```
+/project-release
+```
+
+### `/project-pr`
+
+推送分支并通过 `gh` CLI 创建 Pull Request。
+
+```
+/project-pr
+```
+
+## OpenCode 模型路由
+
+当部署到 OpenCode 时，命令在 frontmatter 中包含 `model:` 字段用于自动模型路由：
+
+| 命令 | 模型 | 原因 |
+|----------|-------|--------|
+| `/project-plan`, `/project-clarify`, `/project-design`, `/project-sprint` | 继承主模型 | 深度推理任务 |
+| `/project-act`, `/project-done`, `/project-check`, `/project-init`, `/project-release`, `/project-pr`, `/project-hotfix` | Sonnet | 实现任务 |
+
+可通过 `pactkit.yaml` 中的 `command_models` 配置。模型简称（`sonnet`、`opus`、`haiku`）会自动从 `opencode.json` provider 配置中解析为完整的 `provider/model-id` 格式。

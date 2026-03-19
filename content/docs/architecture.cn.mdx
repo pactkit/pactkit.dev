@@ -1,0 +1,136 @@
+---
+title: 内部架构
+description: 面向贡献者的内部架构和设计原则
+---
+
+本页介绍 PactKit 的内部架构。适合贡献者、高级用户以及想了解工具包构建方式的人。
+
+## 设计原则
+
+PactKit 遵循以下架构原则（编纂在 `08-architecture-principles.md` 中）：
+
+1. **开闭原则 (OCP)** — 通过向注册表添加条目来新增格式/规则/Agent，而非修改核心逻辑
+2. **单一数据源** — 每种数据类型只有一个规范位置
+3. **DRY** — 共享逻辑集中在一处；独立脚本使用内联副本并注明数据源注释
+4. **Prompt 优先** — 行为变更优先修改 prompt（成本最低、影响最大），再考虑代码变更
+5. **默认条件化** — 所有可选功能（CI、hooks、MCP）默认关闭
+
+## 模块概览
+
+```
+src/pactkit/
+├── cli.py              ← CLI 入口: init/update/version/upgrade/schema/spec-lint
+├── config.py           ← 配置加载/验证/生成 + 从 profiles 重导出
+├── profiles.py         ← FormatProfile 冻结数据类注册表 (OCP)
+├── schemas.py          ← 文档结构 Schema（Spec、Board、Context、Lessons）
+├── utils.py            ← 共享工具（atomic_write）
+├── generators/
+│   └── deployer.py     ← 核心部署编排器
+├── prompts/            ← 所有 prompt 模板和常量
+│   ├── agents.py       ← 9 个 Agent 角色定义
+│   ├── commands.py     ← 11 个命令剧本（含 {TEMPLATE_VAR} 占位符）
+│   ├── references.py   ← 参考检查清单（SOLID/安全/质量）
+│   ├── rules.py        ← 8 个规则模块 + CLAUDE_MD_TEMPLATE
+│   ├── skills.py       ← 10 个 Skill 定义
+│   └── workflows.py    ← PDCA 工作流 prompt + LANG_PROFILES
+└── skills/             ← 独立 Skill 脚本
+    ├── board.py        ← Sprint Board 操作
+    ├── scaffold.py     ← 文件脚手架
+    ├── spec_linter.py  ← 非 AI Spec 结构验证
+    └── visualize.py    ← 代码依赖图（Mermaid）
+```
+
+## 关键设计决策
+
+### FormatProfile 注册表
+
+添加新的 AI 工具格式（如 Cursor、Copilot）只需在 `profiles.py` 中添加一个条目：
+
+```python
+@dataclass(frozen=True)
+class FormatProfile:
+    name: str                       # "opencode"
+    config_dir: str                 # ".opencode"
+    skills_path_var: str            # "~/.config/opencode/skills"
+    instructions_file: str          # "AGENTS.md"
+    excluded_agent_fields: tuple    # 需从 Agent 定义中移除的字段
+    # ... 更多字段
+```
+
+函数读取 `profile.skills_path_var` 而非检查 `if format == "opencode"`。
+
+### 模板变量系统
+
+Prompt 模板使用 `{PLACEHOLDER}` 语法，在部署时解析：
+
+```python
+# commands.py 中（模板）:
+"Run: python3 {SKILLS_ROOT}/{name}/scripts/board.py add_story ..."
+
+# deployer.py 中（解析）:
+def _render_prompt(template: str, profile: FormatProfile) -> str:
+    result = template
+    result = result.replace("{SKILLS_ROOT}", profile.skills_path_var)
+    result = result.replace("{BOARD_CMD}", profile.board_cmd)
+    # ... 共 11 个变量
+    return result
+```
+
+使用顺序 `str.replace()` 而非 `str.format_map()`，因为面向用户的模板包含 `{R1, R2}` 和 `{version}_*.mmd` 等模式，会导致 Python 格式解析器抛出 `ValueError`。
+
+### 文档 Schema 注册表
+
+`schemas.py` 是文档结构的单一数据源：
+
+```python
+SCHEMA_REGISTRY = {
+    "spec": SpecSchema,      # 必需章节、元数据字段、AC 格式
+    "board": BoardSchema,    # 章节标题、Story 格式、Task 格式
+    "context": ContextSchema, # 章节列表、时间戳格式
+    "lessons": LessonsSchema, # 表格格式、列定义
+    "test_case": TestCaseSchema,  # Gherkin 格式要求
+}
+```
+
+### 懒加载规则
+
+OpenCode 的规则分为两个层级：
+
+```
+核心规则（始终通过 opencode.json instructions 加载）:
+  01-core-protocol.md       ← 会话上下文、TDD、视觉优先
+  02-hierarchy-of-truth.md  ← Spec > Tests > Code
+  09-credential-safety.md   ← 凭证保护（用户管理）
+
+按需规则（AI 通过 AGENTS.md 中的 @reference 按需加载）:
+  03-file-atlas.md          ← 标准文件位置
+  04-routing-table.md       ← Command → Agent 映射
+  05-workflow-conventions.md ← Commit、分支、PR 规范
+  06-mcp-integration.md     ← 按 PDCA 阶段使用 MCP 服务器
+  07-shared-protocols.md    ← Lazy Visualize、Test Mapping
+  08-architecture-principles.md ← SOLID/DRY 模式
+```
+
+AI 仅在当前任务需要时才读取按需规则。这将每轮开销减少约 62%。
+
+### 安全回归
+
+PactKit 通过分层方法防止 Agent 破坏已有测试：
+
+1. **TDD 循环** — 仅对当前 Story 创建的测试进行迭代
+2. **已有测试保护** — 如果当前 Story 之前存在的测试失败，Agent 会停止并报告（绝不修改）
+3. **Done 回归门禁** — 提交前必须通过完整测试套件
+4. **增量模式** — 仅当满足所有安全条件时使用
+
+## 贡献指南
+
+添加新组件时需要修改的文件：
+
+| 组件 | 需修改的文件 |
+|-----------|---------------|
+| 新 Agent | `agents.py` + `config.py` VALID_AGENTS |
+| 新 Command | `commands.py` + `config.py` VALID_COMMANDS + `rules.py` 路由表 |
+| 新 Skill | `skills.py` + `config.py` VALID_SKILLS |
+| 新 Rule | `rules.py` RULES_FILES + `config.py` VALID_RULES |
+| 新格式 | `profiles.py` FORMAT_PROFILES（一个条目） |
+| 新配置节 | `config.py` 中的 7 个修改点（参见 lessons.md） |

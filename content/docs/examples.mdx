@@ -1,0 +1,239 @@
+---
+title: Examples
+description: Common usage scenarios and step-by-step walkthroughs
+---
+
+Learn PactKit through practical examples. Each scenario shows a complete workflow from requirement to delivery.
+
+## Example 1: Add a Feature (Full PDCA)
+
+A typical feature addition using the complete Plan-Act-Check-Done cycle.
+
+**Scenario**: Add a `/health` endpoint to a FastAPI application.
+
+### Step 1: Plan
+
+```bash
+/project-plan "Add a /health endpoint that returns service status and uptime"
+```
+
+The System Architect will:
+1. Scan the codebase with `visualize`
+2. Generate a Spec at `docs/specs/STORY-001.md`
+3. Add a Story to the Sprint Board
+4. Update `docs/product/context.md`
+
+**Output**: A Spec file like this:
+
+```markdown
+# STORY-001: Add Health Endpoint
+
+| Field   | Value         |
+|---------|---------------|
+| ID      | STORY-001     |
+| Type    | Feature       |
+| Status  | Plan          |
+| Release | TBD           |
+
+## Requirements
+### R1: Health endpoint returns service status
+The system MUST expose a `GET /health` endpoint that returns...
+
+## Acceptance Criteria
+### AC1: Basic health check
+- Given the service is running
+- When a GET request is made to /health
+- Then the response status is 200 with JSON body containing "status": "healthy"
+```
+
+### Step 2: Act
+
+```bash
+/project-act STORY-001
+```
+
+The Senior Developer will:
+1. **Spec Lint Gate** — validate the Spec structure
+2. **Consistency Check** — cross-reference Spec with Board tasks
+3. **Write tests first** (RED) — create `tests/test_health.py`
+4. **Implement** (GREEN) — write the endpoint code
+5. **Verify** — run the full test suite
+
+### Step 3: Check
+
+```bash
+/project-check
+```
+
+The QA Engineer will:
+1. Run security checklist (SEC-1 through SEC-8)
+2. Generate test cases in Gherkin format
+3. Execute tests and verify Spec alignment
+4. Issue a PASS or FAIL verdict
+
+### Step 4: Done
+
+```bash
+/project-done
+```
+
+The Repo Maintainer will:
+1. Run regression gate (full test suite)
+2. Run lint gate
+3. Archive the Story
+4. Create a conventional commit: `feat(api): STORY-001 add /health endpoint`
+5. Offer to create a Pull Request
+
+---
+
+## Example 2: Quick Hotfix
+
+Skip the full PDCA cycle for trivial fixes.
+
+```bash
+/project-hotfix "Fix typo in README: 'recieve' → 'receive'"
+```
+
+The Senior Developer will fix the issue, run a quick test, and commit directly. No Spec or Board entry needed.
+
+---
+
+## Example 3: Greenfield Product Design
+
+Start a brand new product from scratch.
+
+```bash
+/project-design "Build a bookmark manager with tagging and search"
+```
+
+The Product Designer will:
+1. Generate a PRD at `docs/product/prd.md`
+2. Decompose into 5-10 Stories with prioritization
+3. Create Spec files for each Story
+4. Populate the Sprint Board
+5. Generate architecture diagrams
+
+Then execute the Stories one by one:
+
+```bash
+/project-act STORY-001   # Framework setup
+/project-done
+/project-act STORY-002   # Core bookmark CRUD
+/project-done
+# ... and so on
+```
+
+---
+
+## Example 4: Automated Sprint
+
+Run the entire PDCA cycle in one command.
+
+```bash
+/project-sprint "Add user authentication with JWT tokens"
+```
+
+This orchestrates all four phases automatically:
+1. **Plan** — System Architect creates Spec
+2. **Act** — Senior Developer implements with TDD
+3. **Check** — QA Engineer audits
+4. **Done** — Repo Maintainer commits
+
+<Callout type="info">
+Sprint mode requires the Opus model for multi-agent coordination. For Sonnet-level models, run each phase manually.
+</Callout>
+
+---
+
+## Example 5: Multi-Developer Collaboration
+
+Two developers working on the same project without conflicts.
+
+**Developer A** (`pactkit.yaml`):
+```yaml
+developer: alice
+```
+
+**Developer B** (`pactkit.yaml`):
+```yaml
+developer: bob
+```
+
+Now Story IDs are namespaced:
+- Alice creates `STORY-alice-001`, `STORY-alice-002`
+- Bob creates `STORY-bob-001`, `STORY-bob-002`
+
+No file conflicts during merge. Each developer has their own Spec and Board entries.
+
+---
+
+## Example 6: Using Skills Directly
+
+Skills can be invoked independently outside the PDCA workflow.
+
+### Visualize codebase
+
+```bash
+# File-level dependency graph
+visualize
+
+# Class diagram
+visualize --mode class
+
+# Call chain from a specific function
+visualize --mode call --entry handle_request
+```
+
+### Board operations
+
+```bash
+# Add a story manually
+board add_story STORY-042 "Fix login timeout" "Investigate root cause|Implement fix|Add test"
+
+# Mark a task done
+board update_task STORY-042 "Implement fix"
+
+# Archive completed stories
+board archive
+```
+
+### Trace execution flow
+
+```bash
+/pactkit-trace "How does the authentication middleware work?"
+```
+
+### Generate architecture diagram
+
+```bash
+/pactkit-draw "System architecture showing API, DB, and cache layers"
+```
+
+---
+
+## Example 7: OpenCode with Model Routing
+
+When using OpenCode, commands automatically route to the best model for each task.
+
+```bash
+# Uses main model (Opus) — deep reasoning
+/project-plan "Redesign the caching layer for horizontal scaling"
+
+# Uses Sonnet — implementation
+/project-act STORY-003
+
+# Uses Sonnet — QA audit
+/project-check
+
+# Uses Sonnet — commit and cleanup
+/project-done
+```
+
+Customize routing in `.opencode/pactkit.yaml`:
+
+```yaml
+command_models:
+  project-act: sonnet
+  project-plan: opus    # Override: force Opus for planning
+  project-check: haiku  # Override: use Haiku for quick checks
+```

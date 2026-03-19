@@ -1,0 +1,133 @@
+---
+title: Skill
+description: 驱动 PDCA 工作流的 10 个 Skill 工具
+---
+
+PactKit 包含 10 个 Skill — Agent 在工作流中调用的模块化工具。Skill 可以直接调用（如 `/pactkit-draw`），也会在合适的时机被命令自动调用。
+
+| 类型 | 数量 | 描述 |
+|------|-------|-------------|
+| **脚本类** | 3 | 包含可执行逻辑的 Python 脚本 |
+| **纯 Prompt** | 7 | 嵌入 PDCA 命令的 Prompt 模板 |
+
+## 脚本类 Skill
+
+这些 Skill 在 prompt 定义旁包含可执行的 Python 脚本。
+
+### pactkit-visualize
+
+使用 Mermaid 格式的代码依赖图生成器。
+
+| 模式 | 输出 | 图表类型 |
+|------|--------|-------------|
+| `--mode file` | `code_graph.mmd` | 模块导入关系 |
+| `--mode class` | `class_graph.mmd` | 带继承的类图 |
+| `--mode call` | `call_graph.mmd` | 函数级调用图 |
+
+选项: `--entry <func>` 用于 BFS 追踪，`--focus <module>` 用于模块范围分析，`--depth N` 用于大型代码库。
+
+```bash
+visualize                            # 文件级依赖图
+visualize --mode class               # 类图
+visualize --mode call --entry main   # 从 main() 开始的调用链
+visualize --focus auth --depth 2     # 聚焦图，2 层深度
+```
+
+输出目录: `docs/architecture/graphs/`
+
+### pactkit-board
+
+Sprint Board 原子操作，作用于 `docs/product/sprint_board.md`。
+
+| 命令 | 描述 |
+|---------|-------------|
+| `add_story ITEM-ID "Title" "Task A\|Task B"` | 向 Sprint Board 添加新 Story |
+| `update_task ITEM-ID "Task Name"` | 将任务标记为完成 |
+| `archive` | 将已完成的 Story 移至 `docs/product/archive/` |
+| `list_stories` | 查看当前 Story |
+| `update_version VERSION` | 更新版本号 |
+| `snapshot "vX.Y.Z"` | 将架构图保存到 `docs/architecture/snapshots/` |
+| `fix_board` | 将错位的 Story 重新定位到正确的章节 |
+
+### pactkit-scaffold
+
+标准化项目文件的脚手架。
+
+| 命令 | 描述 |
+|---------|-------------|
+| `create_spec ITEM-ID "Title"` | 在 `docs/specs/` 中创建 Spec 文件 |
+| `create_test_file src/module.py` | 生成对应的单元测试 |
+| `create_e2e_test ITEM-ID "scenario"` | 创建 E2E 测试脚手架 |
+| `git_start ITEM-ID` | 按命名规范创建 git 分支 |
+| `create_skill name "Description"` | 创建新的 Skill 目录脚手架 |
+
+## 纯 Prompt Skill
+
+这些 Skill 提供嵌入 PDCA 命令的 prompt 模板。也可以直接调用。
+
+### pactkit-trace
+
+深度代码追踪和执行流分析。生成 Mermaid 序列图和考古学家报告。
+
+```
+/pactkit-trace "登录流程是如何工作的？"
+```
+
+**嵌入于**: `/project-plan`（阶段 1），`/project-act`（阶段 1）
+
+### pactkit-draw
+
+生成 Draw.io XML 架构图。支持架构图、数据流图和部署图类型。
+
+```
+/pactkit-draw "系统架构概览"
+```
+
+**嵌入于**: `/project-plan`（阶段 2），`/project-design`（阶段 2）
+
+### pactkit-analyze
+
+Spec、Sprint Board 和 Test Case 之间的跨产物一致性检查。
+
+```
+/pactkit-analyze STORY-042
+```
+
+**嵌入于**: `/project-act`（阶段 0.6，建议性/非阻塞）
+
+### pactkit-status
+
+用于冷启动的项目状态概览。
+
+**嵌入于**: `/project-init`（阶段 6）
+
+### pactkit-doctor
+
+诊断项目健康。检查配置、架构图、Spec-Board 关联和测试套件。
+
+**嵌入于**: `/project-init`（自动检查）
+
+### pactkit-review
+
+PR 代码审查，包含 SOLID、安全和质量检查清单。
+
+**嵌入于**: `/project-check`（阶段 4，PR 变体）
+
+### pactkit-release
+
+版本发布工作流: 版本升级、架构 snapshot、归档和 git tag。
+
+**嵌入于**: `/project-done`（阶段 3.8，发布变体）
+
+## OpenCode Skill 格式
+
+当部署到 OpenCode 时，Skill 放置在 `~/.config/opencode/skills/` 中，使用 OpenCode 原生 `SKILL.md` frontmatter：
+
+```yaml
+---
+name: pactkit-visualize
+description: "Generate project code dependency graph (Mermaid)"
+---
+```
+
+OpenCode 通过 frontmatter 中的 `name` 和 `description` 字段自动发现 Skill。部署时脚本路径从 `~/.claude/skills/` 重写为 `~/.config/opencode/skills/`。

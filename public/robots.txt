@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pactkit.dev/sitemap.xml
