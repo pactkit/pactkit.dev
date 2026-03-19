@@ -21,6 +21,28 @@ PactKit provides 11 commands as workflow entry points. Six former utility comman
 | `/project-release` | Repo Maintainer | Version release: snapshot, archive, and Git tag |
 | `/project-pr` | Repo Maintainer | Push branch and create pull request via gh CLI |
 
+## Role-Based Command Guide
+
+Choose commands based on your role in the team:
+
+| Role | Commands | What You Do |
+|------|----------|-------------|
+| **BA** | `/project-clarify` | Surface ambiguities, produce Clarified Brief |
+| **PM** | `/project-design` | Generate PRD, decompose into Stories |
+| **Architect** | `/project-plan`, `/project-init` | Create Specs, initialize project governance |
+| **Developer** | `/project-act`, `/project-hotfix` | TDD implementation, emergency fixes |
+| **QA** | `/project-check` | Security + quality audit, spec alignment |
+| **DevOps** | `/project-done`, `/project-release`, `/project-pr` | Commit, release, pull request |
+| **Team Lead** | `/project-sprint` | One-command PDCA orchestration |
+
+<Callout type="info">
+**Solo developer?** Focus on `/project-plan` → `/project-act` → `/project-done`. Other commands become valuable when you have team collaboration or external stakeholders.
+</Callout>
+
+<Callout type="warn">
+**Note**: `/project-sprint` is only supported in Claude Code. OpenCode users should run the PDCA commands individually.
+</Callout>
+
 ## PDCA Core Commands
 
 ### `/project-clarify`
