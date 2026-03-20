@@ -3,6 +3,7 @@
   "pages": [
     "---Getting Started---",
     "index",
+    "philosophy",
     "installation",
     "examples",
     "---Concepts---",

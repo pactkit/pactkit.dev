@@ -6,26 +6,28 @@ export function Features() {
           Why PactKit
         </p>
         <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-          Structure that scales with your AI.
+          The P.A.C.T. that governs your AI.
         </h2>
         <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-          AI coding assistants are powerful but unpredictable. PactKit adds
-          governance without removing flexibility.
+          AI coding assistants are powerful but unpredictable. PactKit enforces
+          a governance contract — clear boundaries between what code does, what
+          data proves, and what AI creates.
         </p>
 
         <div className="mt-16 space-y-20">
-          {/* Feature 1: Hierarchy of Truth */}
+          {/* Feature 1: P.A.C.T. Governance */}
           <Feature
             label="Governance"
-            title="Spec is the law."
-            description="When code conflicts with the spec, spec wins. Always. This single rule eliminates the #1 cause of AI drift — agents rewriting requirements to match their implementation."
-            code={`# Hierarchy of Truth
-Tier 1: Specs (docs/specs/*.md)    → The Law
-Tier 2: Tests                       → Verification
-Tier 3: Implementation code         → Mutable reality
+            title="Four principles. Zero ambiguity."
+            description="P.A.C.T. draws the boundary between human intent and AI execution. Deterministic operations run as code, not prompts. Decisions are grounded in data, not memory. AI handles creativity — code handles everything else."
+            code={`# The P.A.C.T. Contract
+P  Prompt  is ONLY instruction   → defines process, never state
+A  AI      is ONLY creativity    → language and format, never logic
+C  Code    is the Law            → sole executor of deterministic ops
+T  Truth   Data is the Truth     → no memory, no inference, no fabrication
 
-# Conflict? Spec wins.
-# Agent modifies CODE, never the Spec.`}
+# Script exists? Use it. Never reimplement in prompts.
+# Data available? Read it. Never guess from memory.`}
           />
 
           {/* Feature 2: Multi-Agent */}

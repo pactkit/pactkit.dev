@@ -1,0 +1,144 @@
+---
+title: "P.A.C.T. — The Governance Philosophy"
+description: "The governance contract between humans and AI agents: CODE is the Law, Data is the Truth, Prompt is ONLY instruction, AI is ONLY creativity."
+---
+
+> **CODE is the Law. Data is the Truth. Prompt is ONLY instruction. AI is ONLY creativity.**
+
+P.A.C.T. (Prompt, AI, Code, Truth) is a governance framework — a contract between humans and AI agents. The name is the philosophy: **Pact** means covenant, and these four principles define the boundaries that neither side crosses.
+
+- **Humans** issue intent through Prompts and codify rules in Code.
+- **AI** operates creatively within the contract, bounded by Truth (data).
+- Neither side crosses the boundary. That is the Pact.
+
+*First published March 2025 by Slim, creator of PactKit. This framework was developed through months of production experience governing AI agents with deterministic code.*
+
+---
+
+## The Four Principles
+
+```
+P   Prompt   is ONLY instruction   Tells AI how to act — defines process, never state
+A   AI       is ONLY creativity    Formatting, summarization, language — never deterministic logic
+C   Code     is the Law            Sole executor of deterministic operations — no bypass
+T   Truth    Data is the Truth     Factual basis for all judgment — no memory, no fabrication
+```
+
+### Principle 1: CODE is the Law
+
+**Deterministic operations MUST be executed by code, never by AI judgment.**
+
+Any operation with a predictable, repeatable outcome belongs in a script or program. The AI agent has no authority to bypass, approximate, or substitute these operations.
+
+- If a script exists for a task, the agent MUST use it — no reimplementing in natural language
+- Workflows with defined steps (build, deploy, test, sync) are governed by code, not prompts
+- Code acts as a **hard gate**: if the script fails, execution stops. The agent cannot "work around" it
+
+**Why**: AI models are probabilistic. They may produce slightly different results each run. For operations that demand consistency — health checks, deployments, data pipelines — variability is a bug, not a feature. Code eliminates this variability.
+
+| Bad | Good |
+|-----|------|
+| Agent parses CLI output with regex | Script returns structured JSON |
+| Agent calls raw APIs directly | Script wraps API calls with error handling |
+| Agent improvises a deploy sequence | Deploy script enforces the exact pipeline |
+
+### Principle 2: Data is the Truth
+
+**All analysis, judgment, and decisions MUST be based on actual data, never on memory, inference, or assumption.**
+
+This applies universally — not just to system status, but to every domain: analytics, reporting, monitoring, recommendations, and content generation.
+
+```
+Has data source? → Read it.
+No data source?  → Say "data unavailable." Never fabricate.
+```
+
+**Why**: AI models have no persistent memory between sessions and no real-time awareness. Any "fact" an AI states from memory is a hallucination risk. By enforcing data primacy, every assertion can be traced to a source.
+
+| Bad | Good |
+|-----|------|
+| "Based on what I remember..." | "Based on the latest query result..." |
+| Filling missing data with estimates | Marking the field as "data unavailable" |
+| Guessing a metric value | Running the script to get the actual value |
+
+### Principle 3: Prompt is ONLY Instruction
+
+**Prompts, system instructions, and operational docs define HOW to do things, not WHAT things are.**
+
+All forms of natural language guidance — system prompts, skill definitions, tool guides, runbooks — are instructions for the agent. They are not sources of truth about current system state.
+
+| Layer | Role | Example |
+|-------|------|---------|
+| Prompt (Instruction) | Defines process and method | "To check health, run script X" |
+| Data (Truth) | Provides current state | Script X returns `{"healthy": 30, "unhealthy": 3}` |
+| Code (Law) | Executes the operation | Script X queries all services |
+
+**Why**: When agents treat prompts or documentation as factual data, they produce stale or incorrect outputs. Prompts describe procedures; only live data describes reality.
+
+### Principle 4: AI is ONLY Creativity
+
+**AI's value is in formatting, summarization, language, prioritization, and intent understanding — not in executing deterministic logic.**
+
+What AI **should** do:
+- Format and present: Turn structured data into readable reports
+- Summarize and synthesize: Condense information, highlight key points
+- Language and tone: Adapt communication style, localize content
+- Interpret intent: Understand ambiguous requests, ask clarifying questions
+
+What AI should **not** do:
+- Parse structured output (JSON, CSV, XML) — that's CODE
+- Perform arithmetic or statistical computation — that's CODE
+- Determine system health or status — that's DATA
+- Fabricate facts to fill gaps — violates DATA principle
+
+---
+
+## The Four Principles in Relationship
+
+```
+CODE executes  →  DATA verifies  →  Prompt guides  →  AI creates
+ (what to do)     (what is true)     (how to do)      (how to say)
+```
+
+### Example: Daily Report Generation
+
+1. **CODE**: `daily_report.py` queries APIs, aggregates data, outputs structured JSON
+2. **DATA**: The JSON output is the single source of truth for today's numbers
+3. **Prompt**: Skill definition tells the agent: "Run the script, read the JSON, format a report"
+4. **AI**: Agent writes the report narrative — intro, highlights, tone, formatting
+
+Each layer does exactly one job. No layer reaches into another's domain.
+
+---
+
+## Failure Modes This Prevents
+
+| Failure Mode | Which Principle Prevents It |
+|---|---|
+| Agent guesses a deploy command | CODE is the Law |
+| Agent fabricates data in a report | Data is the Truth |
+| Agent treats docs as live system state | Prompt is ONLY Instruction |
+| Agent manually parses JSON instead of using a script | AI is ONLY Creativity |
+| Agent "remembers" yesterday's metrics | Data is the Truth |
+| Agent improvises a workflow not in any runbook | CODE is the Law + Prompt is ONLY Instruction |
+
+---
+
+## Adoption Checklist
+
+When applying P.A.C.T. to a new project:
+
+- [ ] Identify all deterministic operations → wrap them in scripts (CODE)
+- [ ] Identify all data sources → ensure agents query them, never guess (DATA)
+- [ ] Review all prompts and docs → ensure they contain only procedures, not state (Prompt)
+- [ ] Define the AI boundary → list what the agent formats vs. what scripts compute (AI)
+
+---
+
+## Origin
+
+P.A.C.T. was created by **Slim** in early 2025 as the governance foundation for [PactKit](https://pactkit.dev), an open-source toolkit for governing AI coding agents. The framework emerged from a practical observation: **most AI agent failures are boundary violations** — agents computing when they should delegate to code, or fabricating when they should read data.
+
+The name "PactKit" itself encodes this philosophy: **Pact** (契约, covenant) + **Kit** — a toolkit built on a governance contract.
+
+P.A.C.T. is not specific to PactKit. It applies to any system where AI agents collaborate with deterministic code — from DevOps automation to data pipelines to multi-agent orchestration.

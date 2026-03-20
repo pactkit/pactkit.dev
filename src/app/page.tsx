@@ -11,7 +11,7 @@ const jsonLd = {
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Cross-platform",
   description:
-    "Spec-driven agentic development toolkit for AI coding assistants. Compiles workflows, role definitions, and behavioral rules into executable constitutions and playbooks.",
+    "P.A.C.T. governance framework for AI coding assistants. CODE is the Law, Data is the Truth, Prompt is ONLY instruction, AI is ONLY creativity. Enforces clear boundaries between human intent and AI execution.",
   url: "https://pactkit.dev",
   downloadUrl: "https://pypi.org/project/pactkit/",
   license: "https://opensource.org/licenses/MIT",

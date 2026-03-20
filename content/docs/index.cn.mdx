@@ -5,11 +5,18 @@ description: PactKit 快速介绍
 
 ## 什么是 PactKit?
 
-PactKit 是一个开源的、基于规格驱动的智能开发工具包，专为 AI 编码助手设计。它将开发工作流、角色定义和行为规则编译为可执行的**宪章**和**剧本**，适用于 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 和 [OpenCode](https://opencode.ai)。
+PactKit 是一个治理框架，在人类与 AI 智能体之间执行 **P.A.C.T.** 治理契约。它将开发工作流、角色定义和行为规则编译为可执行的**宪章**和**剧本**，适用于 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 和 [OpenCode](https://opencode.ai)。
 
-**名称由来**: Pact（契约）+ Kit — *Code by Contract*（契约式编程）。
+**名称由来**: Pact（契约）+ Kit — 治理契约工具包。
 
-核心理念: **先就规格达成共识，再让 AI 执行代码**。
+核心理念: **CODE 即法则。Data 即真相。Prompt 只是指令。AI 只做创造。**
+
+| | 原则 | 边界 |
+|---|---|---|
+| **P** — Prompt | 只是指令 | 告诉 AI 怎么做 — 定义流程，不定义状态 |
+| **A** — AI | 只做创造 | 格式化、摘要、语言 — 不做确定性逻辑 |
+| **C** — Code | 即法则 | 确定性操作的唯一执行者 — 不可绕过 |
+| **T** — Truth | Data 即真相 | 所有判断的事实基础 — 不靠记忆，不靠推测 |
 
 ## 一览
 
@@ -65,6 +72,7 @@ pactkit init --format opencode
 
 ## 下一步
 
+- [P.A.C.T. 治理哲学](/cn/docs/philosophy) — 这个名字背后的治理契约
 - [安装](/cn/docs/installation) — 部署模式和选项
 - [PDCA+ 工作流](/cn/docs/workflow) — 基于规格驱动的开发生命周期
 - [Agent 集成](/cn/docs/agents) — 9 个专业化 Agent

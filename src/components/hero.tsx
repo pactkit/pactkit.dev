@@ -13,19 +13,20 @@ export function Hero() {
           {/* Left: copy */}
           <div>
             <p className="text-sm font-medium tracking-widest uppercase text-blue-400">
-              Spec-Driven Agentic DevOps
+              The Governance Contract for AI Agents
             </p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Your AI writes specs{" "}
+              CODE is the Law.{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                before code
+                AI is creativity.
               </span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              PactKit gives AI coding assistants a structured operating system
-              — 9 agents collaborate through a Plan-Act-Check-Done lifecycle,
-              with TDD by default and safe regression gates. Works with Claude
-              Code and OpenCode.
+              <strong>P.A.C.T.</strong> — a governance framework that draws
+              clear boundaries between humans and AI agents. Deterministic
+              operations run as code, not prompts. Decisions are grounded in
+              data, not memory. 9 agents, Plan-Act-Check-Done lifecycle,
+              TDD by default.
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -52,9 +53,9 @@ export function Hero() {
             <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
-                v2.1.1
+                v2.2.0
               </span>
-              <span>2,300+ tests</span>
+              <span>2,397+ tests</span>
               <span>MIT License</span>
             </div>
           </div>
