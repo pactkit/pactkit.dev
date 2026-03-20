@@ -13,20 +13,21 @@ export function Hero() {
           {/* Left: copy */}
           <div>
             <p className="text-sm font-medium tracking-widest uppercase text-blue-400">
-              The Governance Contract for AI Agents
+              P.A.C.T. — Prompt · AI · Code · Truth
             </p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              CODE is the Law.{" "}
+              Code executes.{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                AI is creativity.
+                AI creates.
               </span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              <strong>P.A.C.T.</strong> — a governance framework that draws
-              clear boundaries between humans and AI agents. Deterministic
-              operations run as code, not prompts. Decisions are grounded in
-              data, not memory. 9 agents, Plan-Act-Check-Done lifecycle,
-              TDD by default.
+              The governance contract between humans and AI agents
+              — four principles that keep deterministic logic in code
+              and creative tasks in AI.
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground/70">
+              9 specialized agents · Plan-Act-Check-Done lifecycle · TDD by default
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
