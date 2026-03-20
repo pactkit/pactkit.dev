@@ -1,38 +1,11 @@
 ---
 title: Configuration
-description: Deployed files and customization
+description: Customizing PactKit behavior
 ---
 
 <Callout type="info">
 This page covers the **pip install** deployment. If you installed via the [Claude Code Plugin](/docs/installation#option-a-claude-code-plugin-recommended-for-claude-code), all components are deployed automatically and `pactkit.yaml` is not used.
 </Callout>
-
-## Deployment Architecture
-
-PactKit supports two deployment formats, each targeting the AI tool's native directory structure:
-
-### Claude Code (Classic)
-
-```
-~/.claude/
-├── CLAUDE.md                 ← Constitution root (@import references)
-├── rules/                    ← 8 modular rule files
-├── agents/                   ← 9 agent definitions
-├── commands/                 ← 11 command playbooks
-└── skills/                   ← 10 skills (3 scripted + 7 prompt-only)
-```
-
-### OpenCode
-
-```
-~/.config/opencode/
-├── AGENTS.md                 ← Slim header (rules loaded via instructions)
-├── rules/                    ← 8 rule files (3 core always-load + 6 on-demand)
-├── agents/                   ← 9 agents (mode: subagent, record tools)
-├── commands/                 ← 11 commands (agent: build + model: routing)
-├── skills/                   ← 10 skills (SKILL.md frontmatter)
-└── opencode.json             ← Global config (instructions, provider preserved)
-```
 
 ## pactkit.yaml
 
@@ -53,22 +26,18 @@ Both paths are checked automatically — no manual configuration needed.
 |-------|------|---------|-------------|
 | `stack` | string | auto-detected | Project stack (`python`, `node`, `go`, `java`) |
 | `version` | string | current | PactKit version that generated the config |
-| `developer` | string | `""` | Developer prefix for Story IDs (multi-developer collaboration) |
+| `developer` | string | `""` | Developer prefix for Story IDs |
 | `agents` | list | all 9 | Agent definitions to deploy |
 | `commands` | list | all 11 | Command playbooks to deploy |
 | `skills` | list | all 10 | Skills to deploy |
 | `rules` | list | all 8 | Constitution rule modules to deploy |
 | `ci` | object | `provider: none` | CI/CD pipeline generation (`github`, `gitlab`, `none`) |
 | `issue_tracker` | object | `provider: none` | External issue tracker (`github`, `none`) |
-| `hooks` | object | disabled | Opt-in hook templates (pre-commit, post-test, pre-push) |
-| `lint_blocking` | bool | `false` | Whether lint failures block commits in Done command |
-| `auto_fix` | bool | `false` | Whether to auto-fix lint errors before checking |
-| `agent_models` | object | `{}` | Per-agent model overrides (`haiku`, `sonnet`, `opus`, `inherit`) |
-| `command_models` | object | defaults | Per-command model overrides for OpenCode deployment |
-| `check.security_checklist` | bool | `true` | Enable 8-item structured security checklist in Check phase |
-| `done.lesson_quality_threshold` | int | `15` | Minimum quality score (0-25) for lessons to be auto-appended |
-| `rule_scopes` | object | `{}` | Map rule IDs to glob patterns for context-aware scoping |
-| `enterprise` | object | all `false` | Enterprise flags: `no_git`, `no_external`, `non_interactive`, `debug` |
+| `hooks` | object | disabled | Opt-in hook templates |
+| `lint_blocking` | bool | `false` | Whether lint failures block commits |
+| `auto_fix` | bool | `false` | Whether to auto-fix lint errors |
+| `agent_models` | object | `{}` | Per-agent model overrides |
+| `command_models` | object | defaults | Per-command model overrides (OpenCode) |
 
 <Callout type="info">
 All conditional features (CI/CD, issue tracking, hooks, lint blocking) are **disabled by default** and only activate when explicitly configured.
@@ -82,73 +51,44 @@ Set `developer` to avoid Story ID conflicts across team members:
 developer: alice
 ```
 
-Story IDs become `STORY-alice-001`, `STORY-alice-002`, etc. Each developer has their own ID namespace, preventing file conflicts during merge.
+Story IDs become `STORY-alice-001`, `STORY-alice-002`, etc. Each developer has their own ID namespace.
 
-### Command Model Routing (OpenCode)
+### Model Routing
 
-The `command_models` section controls which model each command uses when deployed to OpenCode:
+Configure which model each agent or command uses:
 
 ```yaml
+agent_models:
+  code-explorer: haiku     # Fast exploration
+  system-architect: opus   # Deep analysis
+  senior-developer: sonnet # Implementation
+
 command_models:
-  project-act: sonnet      # Implementation → Sonnet
-  project-done: sonnet     # Commit gate → Sonnet
-  project-check: sonnet    # QA audit → Sonnet
-  project-init: sonnet     # Setup → Sonnet
-  project-release: sonnet  # Release → Sonnet
-  project-pr: sonnet       # PR creation → Sonnet
-  project-hotfix: sonnet   # Hotfix → Sonnet
+  project-act: sonnet
+  project-done: sonnet
 ```
 
-Commands not listed (e.g., `project-plan`, `project-clarify`, `project-design`) inherit the main model, so you can switch between Opus versions freely.
-
-Model shortnames (`sonnet`, `opus`, `haiku`) are automatically resolved to full `provider/model-id` format by reading your `opencode.json` provider configuration.
-
-## Constitution Rules
-
-The 8 rule modules form the "constitution" that governs agent behavior:
-
-| Module | Type | Purpose |
-|--------|------|---------|
-| **Core Protocol** | Core | Session Context, Visual First, Strict TDD, Language Matching |
-| **Hierarchy of Truth** | Core | Spec > Tests > Code precedence, conflict resolution rules |
-| **File Atlas** | On-demand | Standard file locations and their purposes |
-| **Routing Table** | On-demand | Maps commands to agents and playbooks |
-| **Workflow Conventions** | On-demand | Conventional Commits, branch naming, PR conventions |
-| **MCP Integration** | On-demand | Conditional MCP server usage by PDCA phase |
-| **Shared Protocols** | On-demand | Cross-command protocols (Lazy Visualize, Test Mapping, Context.md format) |
-| **Architecture Principles** | On-demand | SOLID/DRY patterns, architecture decision guidelines |
-
-<Callout type="info">
-**Lazy Loading (OpenCode)**: Core rules are loaded on every turn via `opencode.json` instructions. On-demand rules are referenced in `AGENTS.md` and loaded by the AI only when needed — reducing token consumption by ~62% per turn compared to loading all rules.
-</Callout>
+Model shortnames (`sonnet`, `opus`, `haiku`) are automatically resolved to the correct provider format.
 
 ## Language Profiles
 
-PactKit auto-detects the project stack and configures the appropriate test runner and lint command:
+PactKit auto-detects the project stack and configures the appropriate tools:
 
-| Stack | Test Runner | Lint Command | Package File |
-|-------|------------|-------------|-------------|
-| `python` | `pytest tests/` | `ruff check src/ tests/` | `pyproject.toml` |
-| `node` | `npx jest` | `npx eslint .` | `package.json` |
-| `go` | `go test ./...` | `golangci-lint run` | `go.mod` |
-| `java` | `mvn test` | `mvn checkstyle:check` | `pom.xml` |
+| Stack | Test Runner | Lint Command |
+|-------|------------|-------------|
+| `python` | `pytest tests/` | `ruff check src/ tests/` |
+| `node` | `npx jest` | `npx eslint .` |
+| `go` | `go test ./...` | `golangci-lint run` |
+| `java` | `mvn test` | `mvn checkstyle:check` |
 
-## Safe Regression
-
-PactKit's safe regression system prevents agents from blindly modifying pre-existing tests:
-
-- **TDD Loop** — Only iterates on tests created in the current story
-- **Regression Check** — Read-only gate; pre-existing test failure = STOP and report
-- **Done Gate** — Full regression by default; incremental only when ALL safety conditions are met
-
-## Idempotent Updates
+## Updating
 
 ```bash
 pactkit update                    # Claude Code
 pactkit upgrade --format opencode # OpenCode
 ```
 
-Safe to re-run at any time. Re-deploys all managed files while preserving your custom rules and user configuration.
+Safe to re-run at any time. Re-deploys all managed files while preserving your custom configuration.
 
 ## Preview
 

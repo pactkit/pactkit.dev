@@ -1,172 +1,79 @@
 ---
 title: Architecture
-description: Internal architecture and design principles for contributors
+description: Design principles and high-level concepts
 ---
 
-This page explains PactKit's internal architecture. It's useful for contributors, advanced users, and anyone who wants to understand how the toolkit is built.
+This page explains PactKit's design principles. It's useful for understanding why the toolkit is built the way it is.
 
 ## Design Principles
 
-PactKit follows these architecture principles (codified in `08-architecture-principles.md`):
+PactKit follows these core principles:
 
-1. **Open-Closed Principle (OCP)** — Add new formats/rules/agents by adding entries to registries, not modifying core logic
-2. **Single Source of Truth** — Each data type has exactly one canonical location
-3. **DRY** — Shared logic lives in one place; standalone scripts use inline copies with source-of-truth comments
-4. **Prompt-First** — Behavioral changes are prompt modifications (cheapest, highest impact) before code changes
-5. **Conditional by Default** — All optional features (CI, hooks, MCP) are off by default
+1. **Open-Closed Principle (OCP)** — Extend by adding, not modifying. New formats, agents, or rules are added through configuration rather than code changes.
 
-## Module Overview
+2. **Single Source of Truth** — Each concept lives in exactly one place. Specs define requirements, the Board tracks work, code implements behavior.
 
-```
-src/pactkit/
-├── cli.py              ← CLI entry point: init/update/version/upgrade/schema/spec-lint
-├── config.py           ← Config load/validate/generate + re-exports from profiles
-├── profiles.py         ← FormatProfile frozen dataclass registry (OCP)
-├── schemas.py          ← Document structure schemas (Spec, Board, Context, Lessons)
-├── utils.py            ← Shared utilities (atomic_write)
-├── generators/
-│   └── deployer.py     ← Core deployment orchestrator
-├── prompts/            ← All prompt templates and constants
-│   ├── agents.py       ← 9 agent role definitions
-│   ├── commands.py     ← 11 command playbooks (with {TEMPLATE_VAR} placeholders)
-│   ├── references.py   ← Reference checklists (SOLID/Security/Quality)
-│   ├── rules.py        ← 8 rule modules + CLAUDE_MD_TEMPLATE
-│   ├── skills.py       ← 10 skill definitions
-│   └── workflows.py    ← PDCA workflow prompts + LANG_PROFILES
-└── skills/             ← Standalone skill scripts
-    ├── board.py        ← Sprint Board operations
-    ├── scaffold.py     ← File scaffolding
-    ├── spec_linter.py  ← Non-AI Spec structural validation
-    └── visualize.py    ← Code dependency graph (Mermaid)
-```
+3. **Prompt-First** — Behavioral changes are prompt modifications before code changes. AI behavior is tuned through prompts, which is cheaper and more flexible than code.
 
-## Key Design Decisions
+4. **Conditional by Default** — All optional features (CI/CD, hooks, integrations) are disabled by default and only activate when explicitly enabled.
 
-### FormatProfile Registry
+5. **Spec is Law** — When conflicts arise between Spec, tests, and code, the Spec wins. Code adapts to Spec, never the reverse.
 
-Adding a new AI tool format (e.g., Cursor, Copilot) requires only one entry in `profiles.py`:
+## Component Overview
 
-```python
-@dataclass(frozen=True)
-class FormatProfile:
-    name: str                       # "opencode"
-    config_dir: str                 # ".opencode"
-    skills_path_var: str            # "~/.config/opencode/skills"
-    instructions_file: str          # "AGENTS.md"
-    excluded_agent_fields: tuple    # Fields to remove from agent definitions
-    # ... more fields
-```
+PactKit consists of four main component types:
 
-Functions read `profile.skills_path_var` instead of checking `if format == "opencode"`.
+| Component | Purpose | Count |
+|-----------|---------|-------|
+| **Agents** | Role-based AI personas with specialized expertise | 9 |
+| **Commands** | PDCA workflow playbooks | 11 |
+| **Skills** | Reusable tools for specific tasks | 10 |
+| **Rules** | Behavioral governance modules | 8 |
 
-### Template Variable System
+These components work together to implement the PDCA cycle, with each agent responsible for a specific phase.
 
-Prompt templates use `{PLACEHOLDER}` syntax resolved at deploy time:
-
-```python
-# In commands.py (template):
-"Run: python3 {SKILLS_ROOT}/{name}/scripts/board.py add_story ..."
-
-# In deployer.py (resolution):
-def _render_prompt(template: str, profile: FormatProfile) -> str:
-    result = template
-    result = result.replace("{SKILLS_ROOT}", profile.skills_path_var)
-    result = result.replace("{BOARD_CMD}", profile.board_cmd)
-    # ... 11 variables total
-    return result
-```
-
-Sequential `str.replace()` is used instead of `str.format_map()` because user-facing templates contain patterns like `{R1, R2}` and `{version}_*.mmd` that cause `ValueError` in Python's format parser.
-
-### Document Schema Registry
-
-`schemas.py` is the single source of truth for document structure:
-
-```python
-SCHEMA_REGISTRY = {
-    "spec": SpecSchema,      # Required sections, metadata fields, AC format
-    "board": BoardSchema,    # Section headers, story format, task format
-    "context": ContextSchema, # Section list, timestamp format
-    "lessons": LessonsSchema, # Table format, column definitions
-    "test_case": TestCaseSchema,  # Gherkin format requirements
-}
-```
-
-The Spec linter (`spec_linter.py`) and scaffold (`scaffold.py`) both reference these schemas. Since standalone scripts can't import library modules, they use inline copies with a comment pointing to the canonical source.
-
-### Lazy Rule Loading
-
-Rules are split into two tiers for OpenCode:
-
-```
-Core (always loaded via opencode.json instructions):
-  01-core-protocol.md       ← Session context, TDD, visual-first
-  02-hierarchy-of-truth.md  ← Spec > Tests > Code
-  09-credential-safety.md   ← Credential protection (user-managed)
-
-On-demand (loaded by AI via @reference in AGENTS.md):
-  03-file-atlas.md          ← Standard file locations
-  04-routing-table.md       ← Command → agent mapping
-  05-workflow-conventions.md ← Commit, branch, PR conventions
-  06-mcp-integration.md     ← MCP server usage by phase
-  07-shared-protocols.md    ← Lazy Visualize, Test Mapping
-  08-architecture-principles.md ← SOLID/DRY patterns
-```
-
-The AI reads on-demand rules only when the current task requires them. This reduces per-turn overhead by ~62%.
-
-Claude Code uses `@import` which loads all rules every turn — no lazy loading optimization is possible there.
-
-### Deployment Pipeline
-
-The deployer (`generators/deployer.py`) handles four formats:
-
-| Format | Target | Use Case |
-|--------|--------|----------|
-| `classic` | `~/.claude/` | Claude Code native |
-| `opencode` | `~/.config/opencode/` | OpenCode native |
-| `plugin` | Plugin cache directory | Claude Code marketplace |
-| `marketplace` | Self-contained archive | Distribution package |
-
-Each format shares the same prompt templates but applies format-specific transformations:
-- Path rewriting (`~/.claude/skills/` → `~/.config/opencode/skills/`)
-- Agent field removal (Claude-only fields stripped for OpenCode)
-- Frontmatter injection (`model:` routing for OpenCode commands)
-- Config file generation (`opencode.json` vs `CLAUDE.md`)
-
-### Safe Regression
-
-PactKit prevents agents from breaking pre-existing tests through a layered approach:
-
-1. **TDD Loop** — Only iterates on tests created in the current Story
-2. **Pre-existing Test Protection** — If a test that existed before the current Story fails, the agent STOPs and reports (never modifies)
-3. **Done Regression Gate** — Full test suite must pass before committing
-4. **Incremental Mode** — Only used when ALL safety conditions are met (same Story, no base branch divergence)
-
-## Data Flow
+## PDCA Data Flow
 
 ```
 User requirement
-  → /project-plan → System Architect → Spec + Board entry
-  → /project-act  → Senior Developer → Tests + Implementation
-  → /project-check → QA Engineer → Test cases + Verdict
-  → /project-done → Repo Maintainer → Commit + Archive + Context update
+  → Plan phase → System Architect → Spec + Board entry
+  → Act phase  → Senior Developer → Tests + Implementation
+  → Check phase → QA Engineer → Verification + Verdict
+  → Done phase → Repo Maintainer → Commit + Archive
 ```
 
-Cross-session state is maintained through:
-- `docs/product/context.md` — auto-generated sprint status snapshot
-- `docs/architecture/governance/lessons.md` — append-only knowledge base
-- `docs/product/sprint_board.md` — current work items
+## Cross-Session State
+
+PactKit maintains project state across sessions through standard markdown files:
+
+| File | Purpose |
+|------|---------|
+| `docs/specs/*.md` | Requirements and acceptance criteria |
+| `docs/product/sprint_board.md` | Current work items |
+| `docs/product/context.md` | Auto-generated sprint status snapshot |
+| `docs/architecture/governance/lessons.md` | Accumulated project knowledge |
+
+These files are human-readable and version-controlled, ensuring transparency and auditability.
+
+## Multi-Format Support
+
+PactKit deploys to multiple AI tools through format profiles:
+
+| Format | Target | Use Case |
+|--------|--------|----------|
+| `classic` | Claude Code | Native Claude integration |
+| `opencode` | OpenCode | Native OpenCode integration |
+| `plugin` | Claude Code Plugin | Marketplace distribution |
+
+Each format receives the same core functionality, adapted to the target tool's conventions.
 
 ## Contributing
 
-To add a new component:
+PactKit is open source. Contributions are welcome for:
 
-| Component | Files to Touch |
-|-----------|---------------|
-| New agent | `agents.py` + `config.py` VALID_AGENTS |
-| New command | `commands.py` + `config.py` VALID_COMMANDS + `rules.py` routing table |
-| New skill | `skills.py` + `config.py` VALID_SKILLS |
-| New rule | `rules.py` RULES_FILES + `config.py` VALID_RULES |
-| New format | `profiles.py` FORMAT_PROFILES (one entry) |
-| New config section | 7 touch points in `config.py` (see lessons.md) |
+- Bug fixes and improvements
+- Documentation enhancements
+- New language stack profiles
+- Integration examples
+
+See [CONTRIBUTING.md](https://github.com/pactkit/pactkit/blob/main/CONTRIBUTING.md) for guidelines.
