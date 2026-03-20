@@ -47,6 +47,7 @@ export async function generateMetadata(props: {
 
 const docSlugs = [
   [],
+  ['philosophy'],
   ['installation'],
   ['examples'],
   ['workflow'],
