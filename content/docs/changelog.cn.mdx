@@ -11,7 +11,7 @@ description: PactKit 所有重要变更记录
 - **确定性 CLI 子命令** — 25 个 Python CLI 子命令替代 prompt 委派操作。`clean`、`regression`、`context`、`lint`、`test-map`、`coverage-gate`、`lesson-append`、`invariants-refresh`、`doctor`、`backfill-release`、`issue-sync`、`spec-status` 等。
 - **系统性跨流守卫** — 4 组守卫测试：prompt-CLI 交叉引用验证、规范 `LANG_PROFILE_REQUIRED_KEYS` 单一事实源、Spec Status 生命周期（`spec-status` CLI + W006 lint 规则）、声明式跨流覆盖矩阵。
 - **Spec Status CLI** — `pactkit spec-status <spec> <status>` 以编程方式更新 `| Status |` 字段。W006 lint 规则标记无效状态值。
-- **覆盖率门禁** — `pactkit coverage-gate` 执行三级覆盖率阈值（≥80% 通过、50-79% 警告、<50% 阻止）。
+- **覆盖率门禁** — `pactkit coverage-gate` 执行三级覆盖率阈值（≥80% 通过、50-79% 警告、\<50% 阻止）。
 
 ### 修复
 - **跨流完整性**（4 轮审计）— 修复 25+ 个缺口：死 CLI 子命令、HOTFIX_PROMPT 双重 `python3` 前缀、`visualize --lazy` 未调用实际函数、未使用的 LANG_PROFILES 键。

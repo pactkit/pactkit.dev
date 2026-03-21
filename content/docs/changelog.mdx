@@ -11,7 +11,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
 - **Deterministic CLI Subcommands** — 25 Python CLI subcommands replace prompt-delegated operations. `clean`, `regression`, `context`, `lint`, `test-map`, `coverage-gate`, `lesson-append`, `invariants-refresh`, `doctor`, `backfill-release`, `issue-sync`, `spec-status`, and more.
 - **Systemic Cross-Flow Guards** — 4 guard test suites: prompt-CLI cross-reference validation, canonical `LANG_PROFILE_REQUIRED_KEYS` SSoT, Spec Status lifecycle (`spec-status` CLI + W006 lint rule), declarative cross-flow coverage matrix.
 - **Spec Status CLI** — `pactkit spec-status <spec> <status>` programmatically updates `| Status |` field. W006 lint rule flags invalid status values.
-- **Coverage Gate** — `pactkit coverage-gate` enforces 3-tier coverage thresholds (≥80% PASS, 50-79% WARN, <50% BLOCK).
+- **Coverage Gate** — `pactkit coverage-gate` enforces 3-tier coverage thresholds (≥80% PASS, 50-79% WARN, \<50% BLOCK).
 
 ### Fixed
 - **Cross-Flow Integrity** (4 audit rounds) — 25+ gaps fixed: dead CLI subcommands, double `python3` prefix in HOTFIX_PROMPT, `visualize --lazy` not calling actual function, unused LANG_PROFILES keys.
