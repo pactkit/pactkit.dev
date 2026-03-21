@@ -54,9 +54,9 @@ export function Hero() {
             <div className="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-400" />
-                v2.2.0
+                v2.3.0
               </span>
-              <span>2,397+ tests</span>
+              <span>2,663+ tests</span>
               <span>MIT License</span>
             </div>
           </div>
