@@ -5,6 +5,36 @@ description: PactKit 所有重要变更记录
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/)。
 
+## 2.3.0 — 2026-03-22
+
+### 新增
+- **确定性 CLI 子命令** — 25 个 Python CLI 子命令替代 prompt 委派操作。`clean`、`regression`、`context`、`lint`、`test-map`、`coverage-gate`、`lesson-append`、`invariants-refresh`、`doctor`、`backfill-release`、`issue-sync`、`spec-status` 等。
+- **系统性跨流守卫** — 4 组守卫测试：prompt-CLI 交叉引用验证、规范 `LANG_PROFILE_REQUIRED_KEYS` 单一事实源、Spec Status 生命周期（`spec-status` CLI + W006 lint 规则）、声明式跨流覆盖矩阵。
+- **Spec Status CLI** — `pactkit spec-status <spec> <status>` 以编程方式更新 `| Status |` 字段。W006 lint 规则标记无效状态值。
+- **覆盖率门禁** — `pactkit coverage-gate` 执行三级覆盖率阈值（≥80% 通过、50-79% 警告、<50% 阻止）。
+
+### 修复
+- **跨流完整性**（4 轮审计）— 修复 25+ 个缺口：死 CLI 子命令、HOTFIX_PROMPT 双重 `python3` 前缀、`visualize --lazy` 未调用实际函数、未使用的 LANG_PROFILES 键。
+- **单一事实源违规** — `SPEC_VALID_STATUSES` 和 `LANG_PROFILE_REQUIRED_KEYS` 在 `schemas.py` 中规范化。所有消费方从单一来源导入。
+
+### 变更
+- `schemas.py` 成为所有规范常量的单一事实源（面板区段、经验格式、Spec 状态、语言配置键）。
+
+---
+
+## 2.2.0 — 2026-03-20
+
+### 新增
+- **上下文感知规则加载** — `COMMAND_RULES_MAP` 为 11 个命令各自映射所需规则，每命令 token 使用量减少 **20-83%**。
+- **栈感知 CI 流水线生成** — `CI_PROFILES` 支持 Python、Node.js、Go 和 Java，配置正确的 setup actions 和测试运行器。
+- **GitHub Enterprise (GHE) 支持** — `ci.github_host` 和 `ci.actions_ref` 配置项支持 GHE Server 环境。
+
+### 变更
+- `_deploy_ci()` 从硬编码 Python 模板重构为参数化构建器。
+- CLAUDE.md 不再包含全局规则 `@import` 指令 — 规则在命令级别注入。
+
+---
+
 ## 2.1.1 — 2026-03-18
 
 ### 新增

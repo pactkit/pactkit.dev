@@ -5,6 +5,36 @@ description: All notable changes to PactKit
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## 2.3.0 — 2026-03-22
+
+### Added
+- **Deterministic CLI Subcommands** — 25 Python CLI subcommands replace prompt-delegated operations. `clean`, `regression`, `context`, `lint`, `test-map`, `coverage-gate`, `lesson-append`, `invariants-refresh`, `doctor`, `backfill-release`, `issue-sync`, `spec-status`, and more.
+- **Systemic Cross-Flow Guards** — 4 guard test suites: prompt-CLI cross-reference validation, canonical `LANG_PROFILE_REQUIRED_KEYS` SSoT, Spec Status lifecycle (`spec-status` CLI + W006 lint rule), declarative cross-flow coverage matrix.
+- **Spec Status CLI** — `pactkit spec-status <spec> <status>` programmatically updates `| Status |` field. W006 lint rule flags invalid status values.
+- **Coverage Gate** — `pactkit coverage-gate` enforces 3-tier coverage thresholds (≥80% PASS, 50-79% WARN, <50% BLOCK).
+
+### Fixed
+- **Cross-Flow Integrity** (4 audit rounds) — 25+ gaps fixed: dead CLI subcommands, double `python3` prefix in HOTFIX_PROMPT, `visualize --lazy` not calling actual function, unused LANG_PROFILES keys.
+- **SSoT Violations** — `SPEC_VALID_STATUSES` and `LANG_PROFILE_REQUIRED_KEYS` canonicalized in `schemas.py`. All consumers import from single source.
+
+### Changed
+- `schemas.py` is the single source of truth for all canonical constants (board sections, lessons format, spec statuses, language profile keys).
+
+---
+
+## 2.2.0 — 2026-03-20
+
+### Added
+- **Context-Aware Rule Loading** — `COMMAND_RULES_MAP` maps each of 11 commands to only the rules it needs, reducing per-command token usage by **20-83%**.
+- **Stack-Aware CI Pipeline Generation** — `CI_PROFILES` supports Python, Node.js, Go, and Java with correct setup actions and test runners.
+- **GitHub Enterprise (GHE) Support** — `ci.github_host` and `ci.actions_ref` configuration for GHE Server environments.
+
+### Changed
+- `_deploy_ci()` refactored from hardcoded Python-only templates to parameterized builders.
+- CLAUDE.md no longer contains global rule `@import` directives — rules injected at command level.
+
+---
+
 ## 2.1.1 — 2026-03-18
 
 ### Added
